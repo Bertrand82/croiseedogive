@@ -8,14 +8,9 @@ class ThreeScene extends Component {
 
 
     componentDidMount() {
-        let cote1 = 2
-        let cote2 = 4;
-        let phi = Math.atan(cote2 / cote1);
-        let diagonale = Math.sqrt(cote1 * cote1 + cote2 * cote2);
-        let hauteur = diagonale / 2;
         const width = this.mount.clientWidth
         const height = this.mount.clientHeight
-        let e = 0.005;
+
         //ADD SCENE
         this.scene = new THREE.Scene()
         //ADD CAMERA
@@ -31,8 +26,32 @@ class ThreeScene extends Component {
         this.renderer.setClearColor('#000000')
         this.renderer.setSize(width, height)
         this.mount.appendChild(this.renderer.domElement)
-        //ADD CUBE
+        //ADD CROISEE        
+        this.createCroisees();
+        this.controls = new TrackballControls(this.camera);
+        this.initControls();
+        this.start()
+    }
 
+    createCroisees() {
+        let cote1 = 2
+        let cote2 = 2;
+        let e = 0.005;       
+
+        var cle = this.createSimpleCroiseeOgive(cote1, cote2,e);
+
+        for (let i = 0; i < 4; i++) {
+            var cleClone = cle.clone(true);
+            cleClone.translateX(i * cote1);
+            this.scene.add(cleClone);
+        }
+    }
+
+    createSimpleCroiseeOgive(cote1, cote2, e) {
+
+        let phi = Math.atan(cote2 / cote1);
+        let diagonale = Math.sqrt(cote1 * cote1 + cote2 * cote2);
+        let hauteur = diagonale / 2;
 
 
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
@@ -93,40 +112,31 @@ class ThreeScene extends Component {
         torusTiersPoint22.rotation.x += Math.PI;
         torusTiersPoint32.rotation.z += Math.PI;
         torusTiersPoint32.rotation.x += Math.PI;
-        
+
         torusTiersPoint21.add(torusTiersPoint22);
         torusTiersPoint21.add(torusTiersPoint31);
         torusTiersPoint21.add(torusTiersPoint32);
-        torusTiersPoint21.rotation.y=Math.PI/2;
+        torusTiersPoint21.rotation.y = Math.PI / 2;
 
         var torusCroiseeGeometry = new THREE.TorusBufferGeometry(diagonale / 2, e, 5, 100, Math.PI);
         var torusCroisee1 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial);
         var torusCroisee2 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial);
         torusCroisee1.rotation.y += phi;
         torusCroisee2.rotation.y += -phi;
-
         var cleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2);
         cleGeometry.translate(0, hauteur, 0);
         var cleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
-        this.cle = new THREE.Mesh(cleGeometry, torusMmaterial);
+        var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
 
 
-        this.cle.add(torusCroisee1);
-        this.cle.add(torusCroisee2);
-        this.cle.add(torusTiersPoint01);
-        this.cle.add(torusTiersPoint21);
-        this.cle.add(cube);
-        this.cle.add(croix1);
-        this.cle.add(croix2);
-
-        this.scene.add(this.cle);
-
-
-
-
-        this.controls = new TrackballControls(this.camera);
-        this.initControls();
-        this.start()
+        cle.add(torusCroisee1);
+        cle.add(torusCroisee2);
+        cle.add(torusTiersPoint01);
+        cle.add(torusTiersPoint21);
+        cle.add(cube);
+        cle.add(croix1);
+        cle.add(croix2);
+        return cle;
     }
 
     initControls() {
