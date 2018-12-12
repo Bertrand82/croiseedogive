@@ -1,21 +1,29 @@
 import React, { Component } from 'react';
 import TrackballControls from './TrackballControls';
+
 import * as THREE from 'three';
+import ThreeScene from './ThreeScene';
 
 
 
-class ThreeScene extends Component {
+
+
+class SceneBg extends Component {
 
 
     componentDidMount() {
         const width = this.mount.clientWidth
         const height = this.mount.clientHeight
-
+        this.ii = 0;
+        this.nImage = 0;
+        var d = new Date();
+        this.timeStart = d.getTime();
+        this.lastTime = d.getTime();
         //ADD SCENE
         this.scene = new THREE.Scene()
         //ADD CAMERA
         this.camera = new THREE.PerspectiveCamera(
-            75,
+            50,
             width / height,
             0.1,
             1000
@@ -34,26 +42,162 @@ class ThreeScene extends Component {
     }
 
     createCroisees() {
-        let cote1 = 2
-        let cote2 = 2;
-        let e = 0.005;       
-
-        var cle = this.createSimpleCroiseeOgive(cote1, cote2,e);
-
-        for (let i = 0; i < 4; i++) {
-            var cleClone = cle.clone(true);
-            cleClone.translateX(i * cote1);
-            this.scene.add(cleClone);
-        }
+        this.cote1 = 2
+        this.cote2 = 2;
+        this.hColonne =1;
+        this.e = 0.005;
+        var cle = this.createStart( );
+        this.scene.add(cle);
+        var axesHelper = new THREE.AxesHelper(5);
+        this.scene.add(axesHelper);
     }
 
-    createSimpleCroiseeOgive(cote1, cote2, e) {
+    createStart() {
 
+        let hauteur = 1;
+        let r = this.getR();
+
+        var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.e, 5, 100, 2 * Math.PI);
+        this.torusTiersPointCircle = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
+        this.torusTiersPointCircle.rotation.x += Math.PI / 2;
+        var cleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2);
+        cleGeometry.translate(0, hauteur, 0);
+
+        var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
+        cle.add(this.torusTiersPointCircle);
+        return cle;
+    }
+
+    getR() {
+        let diagonale = 2;
+        let r = diagonale / 2;
+        
+        return r;
+    }
+
+    getD() {
+        let diagonale = Math.sqrt(this.cote1 * this.cote1 + this.cote2 * this.cote2);
+        let r = this.getR();
+        let d = 2*r*Math.sin(Math.PI/8);
+        console.log(" getD ",d,Math.sin(Math.PI/8),r);
+        return d;
+    }
+
+    drawImage_0() {
+        let e = 0.005;
+        let r = this.getR();
+        var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, e, 5, 8, 2* Math.PI);
+        this.torusTiersPoint = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
+       
+        this.torusTiersPoint.rotation.x += Math.PI / 2;
+        this.torusTiersPoint.rotation.z += Math.PI / 8;
+        this.scene.add(this.torusTiersPoint);
+    }
+
+    drawImage_1() {
+        this.drawImage_choeur(-1);
+    }
+
+    drawImage_2() {
+        this.drawImage_choeur(0);
+    }
+    drawImage_3() {
+        this.drawImage_choeur(1);
+    }
+    drawImage_4() {
+        this.drawImage_choeur(2);
+    }
+    drawImage_5() {
+        this.drawImage_choeur(3);
+    }
+    drawImage_6() {
+        this.drawImage_choeur(4);
+    }
+    drawImage_7() {
+        this.torusTiersPoint.translateZ(this.hColonne);
+        this.torusTiersPointCircle.translateZ(this.hColonne);
+
+        this.addColonne(1); 
+        this.addColonne(2); 
+        this.addColonne(3);
+        this.addColonne(4);
+        this.addColonne(5);
+        this.addColonne(6);
+    }
+    drawImage_8() {
+        this.addCroisee(1);
+    }
+    drawImage_9() {
+        this.addCroisee(2);
+    }
+    drawImage_10() {
+        this.addCroisee(3);
+    }
+    drawImage_11() {
+        this.addCroisee(4);
+    }
+
+    drawImage_12() {
+        this.addChapelle(1);
+    }
+
+    drawImage_13() {
+        this.addChapelle(2);
+    }
+    drawImage_14() {
+        this.addChapelle(3);
+    }
+    drawImage_15() {
+        this.addChapelle(4);
+    }
+     
+    addChapelle(n){
+        let cote = this.getR()/2;
+        let r = Math.sqrt(2*cote*cote)/2;
+        let hPillierChapelle =this.hColonne-r;
+        let dY = this.getR()+cote/2;
+        var croisee1 = this.createChapelleCroiseeOgive(cote,hPillierChapelle);
+        
+        croisee1.translateZ(n*this.getD());
+        croisee1.translateX(dY);
+        croisee1.translateY(-r);
+        var croisee2 = this.createChapelleCroiseeOgive(cote,hPillierChapelle);
+        croisee2.translateZ(n*this.getD());
+        croisee2.translateX(-dY);
+        croisee2.translateY(-r);
+        this.scene.add(croisee1);
+        this.scene.add(croisee2);
+    
+    }
+
+    createChapelleCroiseeOgive(cote ,hPillierChapelle) {
+        let e =0.01;
+        let cote1 = this.cote2;
+        let cote2 = this.cote2 ;
+        return this.createGenericCroiseeOgive(cote1, cote2,e,hPillierChapelle);
+    }
+    
+    addCroisee(n){
+        var croisee = this.createMainCroiseeOgive();
+        croisee.translateZ(n*this.getD());
+        this.scene.add(croisee);
+    
+    }
+
+    createMainCroiseeOgive( ) {
+        let e =0.01;
+        let cote1 =2* this.getR();
+        this.cote2 = cote1 * Math.sin(Math.PI/8);
+       
+        return this.createGenericCroiseeOgive(cote1, this.cote2,e,this.hColonne);
+    }
+
+    createGenericCroiseeOgive(cote1, cote2,e,hColonne) {
         let phi = Math.atan(cote2 / cote1);
         let diagonale = Math.sqrt(cote1 * cote1 + cote2 * cote2);
         let hauteur = diagonale / 2;
-
-
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
         var torusMmaterial2 = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
         var hCube = 0.01;
@@ -123,12 +267,27 @@ class ThreeScene extends Component {
         var torusCroisee2 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial);
         torusCroisee1.rotation.y += phi;
         torusCroisee2.rotation.y += -phi;
-        var cleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2);
+        var cleGeometry = new THREE.CylinderGeometry(0.06, 0.05, 0.05,1000);
         cleGeometry.translate(0, hauteur, 0);
         var cleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
         var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
-
-
+     
+        
+        var cubeGeometry1 = new THREE.CubeGeometry(e, hColonne, e);
+        cubeGeometry.translate(0, -hColonne , 0);
+        cubeGeometry1.translate(0, -hColonne / 2, 0);
+        var pillier1 = new THREE.Mesh(cubeGeometry1, torusMmaterial);
+        var pillier2 = pillier1.clone();
+        var pillier3 = pillier1.clone();
+        var pillier4 = pillier1.clone();
+        pillier1.translateZ(cote2/2).translateX(cote1/2);
+        pillier2.translateZ(-cote2/2).translateX(cote1/2);
+        pillier3.translateZ(-cote2/2).translateX(-cote1/2);
+        pillier4.translateZ(cote2/2).translateX(-cote1/2);
+        cle.add(pillier1);
+        cle.add(pillier2);
+        cle.add(pillier3);
+        cle.add(pillier4);
         cle.add(torusCroisee1);
         cle.add(torusCroisee2);
         cle.add(torusTiersPoint01);
@@ -138,6 +297,38 @@ class ThreeScene extends Component {
         cle.add(croix2);
         return cle;
     }
+
+
+    drawImage_choeur(n) {
+        let r = this.getR();
+        var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.e, 5, 100, Math.PI / 2);
+        var torusTiersPoint = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
+        torusTiersPoint.rotation.y += n * Math.PI / 4+ Math.PI / 8;
+        this.scene.add(torusTiersPoint);
+
+    }
+
+    addColonne(n) {
+        let r = this.getR();
+        var cubeGeometry1 = new THREE.CubeGeometry(this.e, this.hColonne, this.e);
+        var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+        
+        cubeGeometry1.translate(0, -this.hColonne / 2, 0);
+        var pillier = new THREE.Mesh(cubeGeometry1, torusMmaterial);
+        let teta = n * Math.PI / 4+ Math.PI / 8;
+        pillier.translateZ(r * Math.cos(teta)).translateX(r * Math.sin(teta));
+        this.scene.add(pillier);
+
+
+        var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.e, 5, 100, Math.PI / 2);
+        var torusTiersPoint = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
+        torusTiersPoint.rotation.y += n * Math.PI / 4+ Math.PI / 8;
+        
+
+    }
+
 
     initControls() {
 
@@ -175,6 +366,19 @@ class ThreeScene extends Component {
         this.renderScene()
         this.frameId = window.requestAnimationFrame(this.animate);
         this.controls.update();
+        var d = new Date();
+        let dt = d.getTime() - this.lastTime;
+
+        if (dt > 200) {
+            if (this.nImage < 16) {
+                this.nImage++;
+                let s = 'drawImage_' + this.ii;
+                this.lastTime = d.getTime();
+                this.ii++;
+                console.log("animate " + this.ii + "   ", dt);
+                this[s]();
+            }
+        }
     }
     renderScene = () => {
         this.renderer.render(this.scene, this.camera)
@@ -188,4 +392,4 @@ class ThreeScene extends Component {
         )
     }
 }
-export default ThreeScene
+export default SceneBg
