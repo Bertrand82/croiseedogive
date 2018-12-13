@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TrackballControls from './TrackballControls';
 
 import * as THREE from 'three';
+
 import ThreeScene from './ThreeScene';
 
 
@@ -42,45 +43,55 @@ class SceneBg extends Component {
     }
 
     createCroisees() {
-        this.cote1 = 2
-        this.cote2 = 2;
-        this.hColonne =1;
-        this.e = 0.005;
-        var cle = this.createStart( );
+        this.cote = 2;
+        this.hColonne = 1;
+        this.epaisseur = 0.005;
+        var cle = this.createStart();
         this.scene.add(cle);
         var axesHelper = new THREE.AxesHelper(5);
         this.scene.add(axesHelper);
+        var loader = new THREE.FontLoader();
+        loader.load('fonts/helvetiker_regular.typeface.json', function (font) {
+
+            var geometry = new THREE.TextGeometry('Hello three.js!', {
+                font: font,
+                size: 80,
+                height: 5,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 10,
+                bevelSize: 8,
+                bevelSegments: 5
+            });
+        });
+        //this.scene.add(textGeo);
     }
 
     createStart() {
-
-        let hauteur = 1;
+        this.testWriteText();
         let r = this.getR();
-
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
-        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.e, 5, 100, 2 * Math.PI);
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.epaisseur, 5, 100, 2 * Math.PI);
         this.torusTiersPointCircle = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
         this.torusTiersPointCircle.rotation.x += Math.PI / 2;
         var cleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.2);
-        cleGeometry.translate(0, hauteur, 0);
-
+        cleGeometry.translate(0, r, 0);
         var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
         cle.add(this.torusTiersPointCircle);
         return cle;
     }
 
     getR() {
-        let diagonale = 2;
+        let diagonale = 1;
         let r = diagonale / 2;
-        
         return r;
     }
 
     getD() {
         let diagonale = Math.sqrt(this.cote1 * this.cote1 + this.cote2 * this.cote2);
         let r = this.getR();
-        let d = 2*r*Math.sin(Math.PI/8);
-        console.log(" getD ",d,Math.sin(Math.PI/8),r);
+        let d = 2 * r * Math.sin(Math.PI / 8);
+        console.log(" getD ", d, Math.sin(Math.PI / 8), r);
         return d;
     }
 
@@ -88,9 +99,9 @@ class SceneBg extends Component {
         let e = 0.005;
         let r = this.getR();
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
-        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, e, 5, 8, 2* Math.PI);
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, e, 5, 8, 2 * Math.PI);
         this.torusTiersPoint = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
-       
+
         this.torusTiersPoint.rotation.x += Math.PI / 2;
         this.torusTiersPoint.rotation.z += Math.PI / 8;
         this.scene.add(this.torusTiersPoint);
@@ -119,8 +130,8 @@ class SceneBg extends Component {
         this.torusTiersPoint.translateZ(this.hColonne);
         this.torusTiersPointCircle.translateZ(this.hColonne);
 
-        this.addColonne(1); 
-        this.addColonne(2); 
+        this.addColonne(1);
+        this.addColonne(2);
         this.addColonne(3);
         this.addColonne(4);
         this.addColonne(5);
@@ -140,7 +151,7 @@ class SceneBg extends Component {
     }
 
     drawImage_12() {
-        this.addChapelle(1);
+        this.addCroisee(5);
     }
 
     drawImage_13() {
@@ -151,50 +162,61 @@ class SceneBg extends Component {
     }
     drawImage_15() {
         this.addChapelle(4);
+        this.addChapelle(5);
     }
-     
-    addChapelle(n){
-        let cote = this.getR()/2;
-        let r = Math.sqrt(2*cote*cote)/2;
-        let hPillierChapelle =this.hColonne-r;
-        let dY = this.getR()+cote/2;
-        var croisee1 = this.createChapelleCroiseeOgive(cote,hPillierChapelle);
-        
-        croisee1.translateZ(n*this.getD());
+    drawImage_16() {
+        this.epaisseur = 0.51;;
+        this.scene = new THREE.Scene();
+        var j;
+        for (j = 1; j < 16; j++) {
+            let s = 'drawImage_' + j;
+            this[s]();
+        }
+
+    }
+
+    addChapelle(n) {
+        let cote = this.getR() / 2;
+        let r = Math.sqrt(2 * cote * cote) / 2;
+        let hPillierChapelle = this.hColonne - r;
+        let dY = this.getR() + cote / 2;
+        var croisee1 = this.createChapelleCroiseeOgive(cote, hPillierChapelle);
+
+        croisee1.translateZ(n * this.getD());
         croisee1.translateX(dY);
         croisee1.translateY(-r);
-        var croisee2 = this.createChapelleCroiseeOgive(cote,hPillierChapelle);
-        croisee2.translateZ(n*this.getD());
+        var croisee2 = this.createChapelleCroiseeOgive(cote, hPillierChapelle);
+        croisee2.translateZ(n * this.getD());
         croisee2.translateX(-dY);
         croisee2.translateY(-r);
         this.scene.add(croisee1);
         this.scene.add(croisee2);
-    
+
     }
 
-    createChapelleCroiseeOgive(cote ,hPillierChapelle) {
-        let e =0.01;
+    createChapelleCroiseeOgive(cote, hPillierChapelle) {
+        let e = 0.01;
         let cote1 = this.cote2;
-        let cote2 = this.cote2 ;
-        return this.createGenericCroiseeOgive(cote1, cote2,e,hPillierChapelle);
+        let cote2 = this.cote2;
+        return this.createGenericCroiseeOgive(cote1, cote2, e, hPillierChapelle);
     }
-    
-    addCroisee(n){
+
+    addCroisee(n) {
         var croisee = this.createMainCroiseeOgive();
-        croisee.translateZ(n*this.getD());
+        croisee.translateZ(n * this.getD());
         this.scene.add(croisee);
-    
+
     }
 
-    createMainCroiseeOgive( ) {
-        let e =0.01;
-        let cote1 =2* this.getR();
-        this.cote2 = cote1 * Math.sin(Math.PI/8);
-       
-        return this.createGenericCroiseeOgive(cote1, this.cote2,e,this.hColonne);
+    createMainCroiseeOgive() {
+        let e = 0.01;
+        let cote1 = 2 * this.getR();
+        this.cote2 = cote1 * Math.sin(Math.PI / 8);
+
+        return this.createGenericCroiseeOgive(cote1, this.cote2, e, this.hColonne);
     }
 
-    createGenericCroiseeOgive(cote1, cote2,e,hColonne) {
+    createGenericCroiseeOgive(cote1, cote2, e, hColonne) {
         let phi = Math.atan(cote2 / cote1);
         let diagonale = Math.sqrt(cote1 * cote1 + cote2 * cote2);
         let hauteur = diagonale / 2;
@@ -267,23 +289,23 @@ class SceneBg extends Component {
         var torusCroisee2 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial);
         torusCroisee1.rotation.y += phi;
         torusCroisee2.rotation.y += -phi;
-        var cleGeometry = new THREE.CylinderGeometry(0.06, 0.05, 0.05,1000);
+        var cleGeometry = new THREE.CylinderGeometry(0.06, 0.05, 0.05, 1000);
         cleGeometry.translate(0, hauteur, 0);
         var cleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
         var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
-     
-        
+
+
         var cubeGeometry1 = new THREE.CubeGeometry(e, hColonne, e);
-        cubeGeometry.translate(0, -hColonne , 0);
+        cubeGeometry.translate(0, -hColonne, 0);
         cubeGeometry1.translate(0, -hColonne / 2, 0);
         var pillier1 = new THREE.Mesh(cubeGeometry1, torusMmaterial);
         var pillier2 = pillier1.clone();
         var pillier3 = pillier1.clone();
         var pillier4 = pillier1.clone();
-        pillier1.translateZ(cote2/2).translateX(cote1/2);
-        pillier2.translateZ(-cote2/2).translateX(cote1/2);
-        pillier3.translateZ(-cote2/2).translateX(-cote1/2);
-        pillier4.translateZ(cote2/2).translateX(-cote1/2);
+        pillier1.translateZ(cote2 / 2).translateX(cote1 / 2);
+        pillier2.translateZ(-cote2 / 2).translateX(cote1 / 2);
+        pillier3.translateZ(-cote2 / 2).translateX(-cote1 / 2);
+        pillier4.translateZ(cote2 / 2).translateX(-cote1 / 2);
         cle.add(pillier1);
         cle.add(pillier2);
         cle.add(pillier3);
@@ -302,36 +324,35 @@ class SceneBg extends Component {
     drawImage_choeur(n) {
         let r = this.getR();
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.e, 5, 100, Math.PI / 2);
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.epaisseur, 5, 100, Math.PI / 2);
         var torusTiersPoint = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
-        torusTiersPoint.rotation.y += n * Math.PI / 4+ Math.PI / 8;
+        torusTiersPoint.rotation.y += n * Math.PI / 4 + Math.PI / 8;
         this.scene.add(torusTiersPoint);
 
     }
 
     addColonne(n) {
         let r = this.getR();
-        var cubeGeometry1 = new THREE.CubeGeometry(this.e, this.hColonne, this.e);
+        var cubeGeometry1 = new THREE.CubeGeometry(this.epaisseur, this.hColonne, this.epaisseur);
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-        
+
         cubeGeometry1.translate(0, -this.hColonne / 2, 0);
         var pillier = new THREE.Mesh(cubeGeometry1, torusMmaterial);
-        let teta = n * Math.PI / 4+ Math.PI / 8;
+        let teta = n * Math.PI / 4 + Math.PI / 8;
         pillier.translateZ(r * Math.cos(teta)).translateX(r * Math.sin(teta));
         this.scene.add(pillier);
 
 
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.e, 5, 100, Math.PI / 2);
+        var torusTiersPointGeometry = new THREE.TorusBufferGeometry(r, this.epaisseur, 5, 100, Math.PI / 2);
         var torusTiersPoint = new THREE.Mesh(torusTiersPointGeometry, torusMmaterial);
-        torusTiersPoint.rotation.y += n * Math.PI / 4+ Math.PI / 8;
-        
+        torusTiersPoint.rotation.y += n * Math.PI / 4 + Math.PI / 8;
+
 
     }
 
 
     initControls() {
-
 
         this.controls.rotateSpeed = 2.0;
         this.controls.zoomSpeed = 1.2;
@@ -360,6 +381,27 @@ class SceneBg extends Component {
     stop = () => {
         cancelAnimationFrame(this.frameId)
     }
+
+    testWriteText() {
+        let canvas = document.createElement("canvas");
+        canvas.width = 200;
+        canvas.height = 120;
+        canvas.style.cssText = "width:200px;height:48px; background: #cdcdcd;position: absolute ;left: 10px;top:10px";
+        canvas.setAttribute("id", "canvasID");
+        let root = document.getElementById('root');
+        root.appendChild(canvas);
+        this.traceContext = canvas.getContext("2d");
+
+        this.traceContext.fillStyle = "blue";
+        this.traceContext.font = "bold 32px Arial";
+        this.traceContext.fillText("initialisation", 10, 68);
+    }
+
+    trace(t) {
+        
+        this.traceContext.clearRect(0,0,200,120);
+        this.traceContext.fillText(""+t, 10, 68);
+    }
     animate = () => {
         // this.cylindre.rotation.x += 0.01
         // this.cylindre.rotation.y += 0.01
@@ -371,6 +413,7 @@ class SceneBg extends Component {
 
         if (dt > 200) {
             if (this.nImage < 16) {
+                this.trace ('   '+this.nImage );
                 this.nImage++;
                 let s = 'drawImage_' + this.ii;
                 this.lastTime = d.getTime();
@@ -386,7 +429,7 @@ class SceneBg extends Component {
     render() {
         return (
             <div
-                style={{ width: '300px', height: '300px' }}
+                style={{ width: '600px', height: '600px' }}
                 ref={(mount) => { this.mount = mount }}
             />
         )
