@@ -178,17 +178,18 @@ class SceneBg extends Component {
     addChapelle(n) {
         let cote = this.getR() / 2;
         let r = Math.sqrt(2 * cote * cote) / 2;
-        let hPillierChapelle = this.hColonne - r;
-        let dY = this.getR() + cote / 2;
+        let hPillierChapelle = (this.hColonne - r)/2;
+        let dY = this.cote1/2 + r ;
+        let dH = -((this.hColonne - r)-hPillierChapelle)-r;
         var croisee1 = this.createChapelleCroiseeOgive(cote, hPillierChapelle);
 
         croisee1.translateZ(n * this.getD());
         croisee1.translateX(dY);
-        croisee1.translateY(-r);
+        croisee1.translateY(dH);
         var croisee2 = this.createChapelleCroiseeOgive(cote, hPillierChapelle);
         croisee2.translateZ(n * this.getD());
         croisee2.translateX(-dY);
-        croisee2.translateY(-r);
+        croisee2.translateY(dH);
         this.scene.add(croisee1);
         this.scene.add(croisee2);
 
@@ -210,10 +211,10 @@ class SceneBg extends Component {
 
     createMainCroiseeOgive() {
         let e = 0.01;
-        let cote1 = 2 * this.getR();
-        this.cote2 = cote1 * Math.sin(Math.PI / 8);
+        this.cote1 = 2 * this.getR();
+        this.cote2 = this.cote1 * Math.sin(Math.PI / 8);
 
-        return this.createGenericCroiseeOgive(cote1, this.cote2, e, this.hColonne);
+        return this.createGenericCroiseeOgive(this.cote1, this.cote2, e, this.hColonne);
     }
 
     createGenericCroiseeOgive(cote1, cote2, e, hColonne) {
