@@ -81,6 +81,7 @@ class BgThreeScene extends Component {
 
         var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
         var torusMmaterial2 = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+        var torusMmaterial3 = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
         var hCube = 0.01;
         var cubeGeometry = new THREE.CubeGeometry(cote1, hCube, cote2);
         cubeGeometry.translate(0, -hCube / 2, 0);
@@ -98,13 +99,13 @@ class BgThreeScene extends Component {
         var teta1 = Math.asin(hauteur / rTierPoint1);
 
         var torusTiersPointGeometry01 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry01.translate(dx1, 0, -cote2 / 2);
+        torusTiersPointGeometry01.translate(dx1, 0, -(cote2 / 2-ep));
         var torusTiersPointGeometry02 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry02.translate(dx1, 0, cote2 / 2);
+        torusTiersPointGeometry02.translate(dx1, 0, cote2 / 2-ep);
         var torusTiersPointGeometry11 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry11.translate(dx1, 0, cote2 / 2);
+        torusTiersPointGeometry11.translate(dx1, 0, cote2 / 2-ep);
         var torusTiersPointGeometry12 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry12.translate(dx1, 0, -cote2 / 2);
+        torusTiersPointGeometry12.translate(dx1, 0, -(cote2 / 2-ep));
         var torusTiersPoint01 = new THREE.Mesh(torusTiersPointGeometry01, torusMmaterial);
         var torusTiersPoint02 = new THREE.Mesh(torusTiersPointGeometry02, torusMmaterial);
         var torusTiersPoint11 = new THREE.Mesh(torusTiersPointGeometry11, torusMmaterial);
@@ -121,14 +122,14 @@ class BgThreeScene extends Component {
         var rTierPoint2 = (b * b + hauteur * hauteur) / (2 * b);
         var dx2 = ((cote2 / 2) - rTierPoint2);
         var teta2 = Math.asin(hauteur / rTierPoint2);
-        var torusTiersPointGeometry21 = new THREE.TorusBufferGeometry(rTierPoint2, ep, 5, 100, teta2);
-        torusTiersPointGeometry21.translate(dx2, 0, -cote1 / 2);
-        var torusTiersPointGeometry22 = new THREE.TorusBufferGeometry(rTierPoint2, ep, 5, 100, teta2);
-        torusTiersPointGeometry22.translate(dx2, 0, cote1 / 2);
-        var torusTiersPointGeometry31 = new THREE.TorusBufferGeometry(rTierPoint2, ep, 5, 100, teta2);
-        torusTiersPointGeometry31.translate(dx2, 0, cote1 / 2);
-        var torusTiersPointGeometry32 = new THREE.TorusBufferGeometry(rTierPoint2, ep, 5, 100, teta2);
-        torusTiersPointGeometry32.translate(dx2, 0, -cote1 / 2);
+        var torusTiersPointGeometry21 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
+        torusTiersPointGeometry21.translate(dx2, 0, -(cote1 / 2-ep));
+        var torusTiersPointGeometry22 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
+        torusTiersPointGeometry22.translate(dx2, 0, cote1 / 2-ep);
+        var torusTiersPointGeometry31 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
+        torusTiersPointGeometry31.translate(dx2, 0, cote1 / 2-ep);
+        var torusTiersPointGeometry32 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
+        torusTiersPointGeometry32.translate(dx2, 0, -(cote1 / 2-ep));
         var torusTiersPoint21 = new THREE.Mesh(torusTiersPointGeometry21, torusMmaterial2);
         var torusTiersPoint22 = new THREE.Mesh(torusTiersPointGeometry22, torusMmaterial2);
         var torusTiersPoint31 = new THREE.Mesh(torusTiersPointGeometry31, torusMmaterial2);
@@ -143,14 +144,14 @@ class BgThreeScene extends Component {
         torusTiersPoint21.add(torusTiersPoint32);
         torusTiersPoint21.rotation.y = Math.PI / 2;
 
-        var torusCroiseeGeometry = new THREE.TorusBufferGeometry(diagonale / 2, ep, 5, 100, Math.PI);
-        var torusCroisee1 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial);
-        var torusCroisee2 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial);
+        var torusCroiseeGeometry = new THREE.TorusBufferGeometry((diagonale / 2)-ep/2, ep, 5, 100, Math.PI);
+        var torusCroisee1 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial3);
+        var torusCroisee2 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial3);
         torusCroisee1.rotation.y += phi;
         torusCroisee2.rotation.y += -phi;
         var cleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.01);
         cleGeometry.translate(0, hauteur, 0);
-        var cleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
+        var cleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
         var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
 
 

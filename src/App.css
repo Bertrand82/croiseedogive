@@ -1,7 +1,6 @@
 .App {
   text-align: center;
-  border:red ;
-  border-style: solid;
+  
 }
 
 .App-logo {
@@ -41,7 +40,7 @@
 }
 canvas { 
   display: block; 
-  border:rgb(255, 0, 0) ;
+  
   border-style: solid;
-  border-color: #282c34;
+  border-color: #ff0000;
  }
