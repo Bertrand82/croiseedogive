@@ -3,6 +3,15 @@ Ce projet permet de visualiser en 3D une croisee d'ogive gothique
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Pour installer three:
+
+npx create-react-app my-app
+
+install three:
+npm i three
+npm i three react-three-fiber
+npm install react-dat-gui --save
+
 ## Available Scripts
 
 In the project directory, you can run:
