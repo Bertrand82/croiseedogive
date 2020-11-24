@@ -9,6 +9,11 @@ var diagonale = function (data) {
   var dia = Math.sqrt(dia2);
   return Number.parseFloat(dia).toFixed(0);
 }
+
+var rayonDiagonale = function(data){
+  var h = hauteur(data);
+  return (h - data.e_nervure);
+}
 var hauteur = function (data) {
   var h = diagonale(data) / 2;
   return h;
@@ -57,16 +62,24 @@ const Stats = ({ data }) => (
         <td>Hauteur (extrados)</td>
       </tr>
       <tr>
-        <td>Position centre a : </td><td> {centre(data.cote_a, hauteur(data))}</td><td></td>
+        <td>Position centre a : </td>
+        <td> {centre(data.cote_a, hauteur(data))}</td>
+        <td>Permet de dessiner le coffrage du coté a . (vpoir rayon plus bas)</td>
       </tr>
       <tr>
         <td>Position centre b :</td><td>  {centre(data.cote_b, hauteur(data))}</td><td></td>
       </tr>
       <tr>
-        <td>rayon  a :</td><td>{rayon(data.cote_a, hauteur(data), data.e_nervure)}</td><td></td>
+        <td>rayon  a :</td>
+        <td>{rayon(data.cote_a, hauteur(data), data.e_nervure)}</td>
+        <td>Permet de dessiner le coffrage du coté a . (Avec la position du centre a)</td>
       </tr>
       <tr>
         <td>rayon  b :</td><td>{rayon(data.cote_b, hauteur(data), data.e_nervure)}</td><td></td>
+      </tr>
+      <tr>
+        <td>rayon  diagonale :</td><td>{rayonDiagonale(data)}</td>
+        <td>Permet de dessiner le coffrage de la croisee</td>
       </tr>
 
 

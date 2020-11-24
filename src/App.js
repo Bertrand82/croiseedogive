@@ -11,9 +11,9 @@ function App() {
       <header className="App-header">
         <h2>Croisée d'ogive</h2>        
       </header>
-      <BgThreeScene />
-      <div>
       
+      <div>
+      <BgThreeScene />
       </div>
       
     </div>

@@ -40,5 +40,8 @@
   }
 }
 canvas { 
-  display: block; border:blue ;
-  border-style: solid; }
+  display: block; 
+  border:rgb(255, 0, 0) ;
+  border-style: solid;
+  border-color: #282c34;
+ }

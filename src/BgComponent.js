@@ -52,12 +52,12 @@ class BgComponent extends Component {
         <DatGui data={data} onUpdate={this.handleUpdate}>
 
           <DatString path="titre" label="titre" />
-          <DatNumber
+          <DatNumber 
             path="cote_a"
             label="Coté a (cm)"
             min={100}
             max={600}
-            step={1}
+            step={1}            
           />
           <DatNumber
             path="cote_b"

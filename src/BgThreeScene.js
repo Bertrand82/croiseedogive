@@ -3,19 +3,10 @@ import TrackballControls from './TrackballControls';
 import BgComponent from './BgComponent';
 import * as THREE from 'three';
 
-const ctx = initCanvasText();
-const debug = false;
 
-function initCanvasText() {
-    const ctx = document.createElement('canvas').getContext('2d');
-    ctx.canvas.width = 200;
-    ctx.canvas.height = 100;
-    ctx.font = '12px Arial';
 
-    document.body.appendChild(ctx.canvas);
 
-    return ctx;
-}
+
 class BgThreeScene extends Component {
 
 
@@ -62,21 +53,9 @@ class BgThreeScene extends Component {
         this.initControls();
         this.start();
 
-
-
-        this.traceData();
     }
 
-    traceData() {
-        if (debug) {
-            ctx.fillStyle = '#00FF00';
-            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            ctx.fillStyle = '#FF0000';
-            ctx.fillText("coté a (cm): " + this.state.data.cote_a, 10, 20);
-            ctx.fillText("coté b (cm): " + this.state.data.cote_b, 10, 40);
-        }
-    }
-
+    
     croiseeOgive;
 
     createCroisees() {
@@ -232,7 +211,6 @@ class BgThreeScene extends Component {
         newData.cote_b = cote_b;
         newData.e_nervure = e_nervure;
         this.setState({ data: newData });
-        this.traceData();
         this.scene.remove(this.croiseeOgive);
 
         this.croiseeOgive = this.createSimpleCroiseeOgive(cote_a / 100, cote_b / 100, e_nervure / 100);
