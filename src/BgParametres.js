@@ -29,6 +29,40 @@ var rayon = function (cote, hauteur, e) {
   var r = centre_ - e;
   return r;
 }
+var longueurTotaleArrete = function(data){
+  var hExtrados = hauteur(data);
+  var l=0;  
+  l += 2* longueurTotaleNervureArreteCote(data.cote_a,hExtrados,data.e_nervure);
+  l += 2* longueurTotaleNervureArreteCote(data.cote_b,hExtrados,data.e_nervure);
+  l += 2 * longueurTotaleNervureDiagonale(rayonDiagonale(data));
+  return  Number.parseFloat(l).toFixed(0);;
+}
+var longueurTotaleNervureDiagonale = function(rayon){
+  return rayon * Math.PI;
+}
+var longueurTotaleNervureArreteCote = function(cote,hauteur,e){
+  var centre_ = centre(cote,hauteur);
+  var alpha = Math.asin(hauteur/centre_);
+  var rayon_ = rayon(cote, hauteur, e);
+  var l = 2*alpha*rayon_;
+  console.log(" longueurTotaleNervureArreteCote "+l);
+  return l;
+}
+var longueurTotaleExtradosNervureArreteCote = function(cote,hauteur){
+  var centre_ = centre(cote,hauteur);
+  var alpha = Math.asin(hauteur/centre_);
+  var l = 2*alpha*centre_;
+  return l;
+}
+var SurfaceTotaleVoutins = function(data){
+  var hExtrados = hauteur(data);
+  var l_a =  longueurTotaleExtradosNervureArreteCote(data.cote_a,hExtrados);
+  var l_b =  longueurTotaleExtradosNervureArreteCote(data.cote_a,hExtrados);
+  var s =0;
+  s += l_a* data.cote_b/2;
+  s += l_b * data.cote_a/2;
+  return  Number.parseFloat(s).toFixed(0); 
+}
 
 const Stats = ({ data }) => (
   <section>
@@ -70,16 +104,24 @@ const Stats = ({ data }) => (
         <td>Position centre b :</td><td>  {centre(data.cote_b, hauteur(data))}</td><td></td>
       </tr>
       <tr>
-        <td>rayon  a :</td>
+        <td>rayon  a:</td>
         <td>{rayon(data.cote_a, hauteur(data), data.e_nervure)}</td>
         <td>Permet de dessiner le coffrage du coté a . (Avec la position du centre a)</td>
       </tr>
       <tr>
-        <td>rayon  b :</td><td>{rayon(data.cote_b, hauteur(data), data.e_nervure)}</td><td></td>
+        <td>rayon  b:</td><td>{rayon(data.cote_b, hauteur(data), data.e_nervure)}</td><td></td>
       </tr>
       <tr>
-        <td>rayon  diagonale :</td><td>{rayonDiagonale(data)}</td>
+        <td>rayon  diagonale:</td><td>{rayonDiagonale(data)}</td>
         <td>Permet de dessiner le coffrage de la croisee</td>
+      </tr>
+      <tr>
+        <td>Longueur totale arrêtes:</td><td>{longueurTotaleArrete(data)}</td>
+        <td>Permet d'estimer le nombre de briques necessaires pour les arrêtes</td>
+      </tr>
+      <tr>
+        <td>Surface totale voutins:</td><td>{SurfaceTotaleVoutins(data)}</td>
+        <td>Permet d'estimer le nombre de briques necessaires pour la constructions des voutins</td>
       </tr>
 
 
