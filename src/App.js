@@ -13,6 +13,7 @@ function App() {
       </header>
       
       <div>
+        <div>Cette application permet de définir les valeurs caractéristiques d'une croisee d'ogive en fonction de 3 parametres d'entrée: côté a, côté b, épaisseur des arrêtes</div>
       <BgThreeScene />
       </div>
       

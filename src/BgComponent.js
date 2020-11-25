@@ -37,10 +37,13 @@ class BgComponent extends Component {
   };
 
   // Update current state with changes from controls
-  handleUpdate = newData =>
+  handleUpdate = newData =>{
     this.setState(prevState => ({
       data: { ...prevState.data, ...newData }
-    }));
+    })
+    );
+    this.handleButtonClick();
+  }
 
   render() {
     const { data, defaultData } = this.state;
@@ -51,8 +54,7 @@ class BgComponent extends Component {
 
         <DatGui data={data} onUpdate={this.handleUpdate}>
 
-          <DatString path="titre" label="titre" />
-          <DatNumber 
+           <DatNumber 
             path="cote_a"
             label="Coté a (cm)"
             min={100}
@@ -73,7 +75,7 @@ class BgComponent extends Component {
             max={50}
             step={1}
           />
-          <DatButton label="Update View" onClick={this.handleButtonClick} />
+         
         </DatGui>
       </main>
     );
