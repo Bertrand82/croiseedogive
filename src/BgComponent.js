@@ -18,9 +18,9 @@ class BgComponent extends Component {
     super(props);
 
     const initialState = {
-      cote_a: 300,
-      cote_b: 300,
-      e_nervure: 1,
+      cote_a: 200,
+      cote_b: 200,
+      e_nervure: 10,
       titre: ' Croisée d\'ogive ',
     };
 

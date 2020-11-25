@@ -64,7 +64,7 @@ const Stats = ({ data }) => (
       <tr>
         <td>Position centre a : </td>
         <td> {centre(data.cote_a, hauteur(data))}</td>
-        <td>Permet de dessiner le coffrage du coté a . (vpoir rayon plus bas)</td>
+        <td>Permet de dessiner le coffrage du coté a . (voir rayon plus bas)</td>
       </tr>
       <tr>
         <td>Position centre b :</td><td>  {centre(data.cote_b, hauteur(data))}</td><td></td>

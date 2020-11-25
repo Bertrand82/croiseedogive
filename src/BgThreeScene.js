@@ -14,9 +14,9 @@ class BgThreeScene extends Component {
         super(props);
 
         const initialState = {
-            cote_a: 300,
-            cote_b: 300,
-            e_nervure: 1,
+            cote_a: 200,
+            cote_b: 200,
+            e_nervure: 10,
             titre: 'Croisée d\'ogive ',
         };
 
@@ -59,10 +59,10 @@ class BgThreeScene extends Component {
     croiseeOgive;
 
     createCroisees() {
-        let cote1 = 2
-        let cote2 = 2;
-        let e = 0.01;
-
+        let cote1 = this.state.data.cote_a/100;
+        let cote2 = this.state.data.cote_b/100;
+        let e = this.state.data.e_nervure/100;
+      
         this.croiseeOgive = this.createSimpleCroiseeOgive(cote1, cote2, e);
         this.scene.add(this.croiseeOgive);
         /*for (let i = 0; i < 4; i++) {
@@ -220,7 +220,7 @@ class BgThreeScene extends Component {
     render() {
         return (
             <div>
-                <BgComponent updateParam={this.updateParam} data="{data}" />
+                <BgComponent updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}"/>
                 <div
                     style={{ width: '300px', height: '300px', backgroundColor: "yellow" }}
                     ref={(mount) => { this.mount = mount }}
