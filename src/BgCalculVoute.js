@@ -9,6 +9,10 @@ class BgCalculVoute extends Component {
             cote_b: 200,
             e_nervure: 10,
             titre: ' Croisée d\'ogive ',
+            nbBriqueNervureParMetre:5,     
+            prixUnitaireBriqueNervure:2.7,
+            nbBriqueVoutinParMetre2:6.5,
+            prixUnitaireBriqueVoutin:5.45
         };
 
         this.state = {
@@ -70,6 +74,16 @@ class BgCalculVoute extends Component {
         return Number.parseFloat(s).toFixed(0);
     }
 
+    calculNbTotalBriquesNervures(data){
+       var n  = data.longueurTotaleArrete * data.nbBriqueNervureParMetre/100;
+       return Number.parseFloat(n).toFixed(0);
+    }
+
+    calculNbTotalBriquesVoutins(data){
+        var n = data.surfaceTotaleVoutins * data.nbBriqueVoutinParMetre2/100/100;
+        return Number.parseFloat(n).toFixed(0);
+    }
+
     calculVoute(data) {
         data.diagonale = this.calculDiagonale(data);
         data.hauteurExtrados = this.calculHauteurExtrados(data);
@@ -83,15 +97,24 @@ class BgCalculVoute extends Component {
         data.longueurTotaleArreteDiagonale = this.calculLongueurTotaleNervureDiagonale(data);
         data.longueurTotaleArrete = this.calculLongueurArreteTotal(data);
         data.surfaceTotaleVoutins = this.calculSurfaceTotaleVoutins(data);
+        data.nbTotalBriquesNervures = this.calculNbTotalBriquesNervures(data);
+        data.prixTotalBriquesNervures = data.nbTotalBriquesNervures*data.prixUnitaireBriqueNervure;
+        data.nbTotalBriquesVoutins=this.calculNbTotalBriquesVoutins(data);
+        data.prixTotalBriquesVoutins =data.nbTotalBriquesVoutins *data.prixUnitaireBriqueVoutin;
+        data.prixTotalBriques =data.prixTotalBriquesVoutins+data.prixTotalBriquesNervures ;
         return data;
     }
 
-    updateParam = (cote_a, cote_b, e_nervure) => {
-        console.log("updateParam2 ----- a: " + cote_a + "  b: " + cote_b + "  e: " + e_nervure);
+    updateParam = (d) => {
+        console.log("updateParam2 ----- a: " + d.cote_a + "  b: " + d.cote_b + "  e: " + d.e_nervure);
         var newData = this.state.data;
-        newData.cote_a = cote_a;
-        newData.cote_b = cote_b;
-        newData.e_nervure = e_nervure;
+        newData.cote_a = d.cote_a;
+        newData.cote_b = d.cote_b;
+        newData.e_nervure = d.e_nervure;
+        newData.nbBriqueNervureParMetre=d.nbBriqueNervureParMetre;    
+        newData.prixUnitaireBriqueNervure=d.prixUnitaireBriqueNervure;
+        newData.nbBriqueVoutinParMetre2=d.nbBriqueVoutinParMetre2;
+        newData.prixUnitaireBriqueVoutin=d.prixUnitaireBriqueVoutin;
         this.setState({ data: newData });
         this.props.updateParam(this.state.data.cote_a, this.state.data.cote_b, this.state.data.e_nervure);
         ;
@@ -166,8 +189,55 @@ class BgCalculVoute extends Component {
                         <td>{data.surfaceTotaleVoutins}</td>
                         <td>Permet d'estimer le nombre de briques necessaires pour la constructions des voutins</td>
                     </tr>
+                    <tr>
+                        <td>Nervures : Nombre de briques / m:</td>
+                        <td>{data.nbBriqueNervureParMetre}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Prix unitaire brique nervure:</td>
+                        <td>{data.prixUnitaireBriqueNervure}</td>
+                        <td>Euros</td>
+                    </tr>
+                    <tr>
+                        <td>Nb total de briques nervure:</td>
+                        <td>{data.nbTotalBriquesNervures}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Prix total  briques nervure:</td>
+                        <td>{data.prixTotalBriquesNervures}</td>
+                        <td>Euros</td>
+                    </tr>
+                    <tr>
+                        <td>Prix unitaire brique voutin:</td>
+                        <td>{data.prixUnitaireBriqueVoutin}</td>
+                        <td>Euros</td>
+                    </tr>
+
+                    <tr>
+                        <td>Voutins : Nombre de briques / m2:</td>
+                        <td>{data.nbBriqueVoutinParMetre2}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Nb total de briques voutins:</td>
+                        <td>{data.nbTotalBriquesVoutins}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Prix total  briques voutins:</td>
+                        <td>{data.prixTotalBriquesVoutins}</td>
+                        <td>Euros</td>
+                    </tr>
+                    <tr>
+                        <td>prixTotalBriques:</td>
+                        <td>{data.prixTotalBriques}</td>
+                        <td>Euros</td>
+                    </tr>
 
 
+                    
                 </table>
                 <BgComponent updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}"/>
                 

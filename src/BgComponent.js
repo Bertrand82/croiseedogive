@@ -3,7 +3,8 @@ import 'react-dat-gui/dist/index.css';
 import DatGui, {
   DatNumber,
   DatString,
-  DatButton
+  DatButton,
+  DatFolder
 } from 'react-dat-gui';
 import React, { Component } from 'react';
 
@@ -19,7 +20,10 @@ class BgComponent extends Component {
       cote_a: 200,
       cote_b: 200,
       e_nervure: 10,
-      titre: ' Croisée d\'ogive ',
+      nbBriqueNervureParMetre:5,     
+      prixUnitaireBriqueNervure:2.7,
+      nbBriqueVoutinParMetre2:6.5,
+      prixUnitaireBriqueVoutin:5.45
     };
 
     this.state = {
@@ -27,20 +31,16 @@ class BgComponent extends Component {
       defaultData: initialState
     };
   }
-  // Update Component Parent
-  handleButtonClick = () => {
-    console.log("Button was clicked.");
-    this.props.updateParam(this.state.data.cote_a, this.state.data.cote_b, this.state.data.e_nervure);
 
-  };
 
   // Update current state with changes from controls
-  handleUpdate = newData =>{
+  handleUpdate = newData => {
     this.setState(prevState => ({
       data: { ...prevState.data, ...newData }
     })
     );
-    this.handleButtonClick();
+    // Update parent
+    this.props.updateParam(this.state.data);
   }
 
   render() {
@@ -48,15 +48,15 @@ class BgComponent extends Component {
 
     return (
       <main style={{ marginRight: '350px' }}>
-       
+
         <DatGui data={data} onUpdate={this.handleUpdate}>
 
-           <DatNumber 
+          <DatNumber
             path="cote_a"
             label="Coté a (cm)"
             min={100}
             max={600}
-            step={1}            
+            step={1}
           />
           <DatNumber
             path="cote_b"
@@ -72,7 +72,40 @@ class BgComponent extends Component {
             max={50}
             step={1}
           />
-         
+          <DatFolder title="Brique Nervures">
+            <DatNumber
+              path="nbBriqueNervureParMetre"
+              label="Nb Briques / metre"
+              min={2}
+              max={50}
+              step={0.1}
+            />
+            <DatNumber
+              path="prixUnitaireBriqueNervure"
+              label="Prix Unitaire "
+              min={0.5}
+              max={20}
+              step={0.1}
+            />
+
+          </DatFolder>
+          <DatFolder title="Briques Voutins">
+            <DatNumber
+              path="nbBriqueVoutinParMetre2"
+              label="Nb Briques / m2"
+              min={2}
+              max={100}
+              step={0.1}
+            />
+            <DatNumber
+              path="prixUnitaireBriqueVoutin"
+              label="Prix Unitaire "
+              min={0.5}
+              max={20}
+              step={0.1}
+            />
+
+          </DatFolder>
         </DatGui>
       </main>
     );

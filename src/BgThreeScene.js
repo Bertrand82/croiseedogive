@@ -19,6 +19,10 @@ class BgThreeScene extends Component {
             cote_b: 200,
             e_nervure: 10,
             titre: 'Croisée d\'ogive ',
+            nbBriqueNervureParMetre:5,     
+            prixUnitaireBriqueNervure:2.7,
+            nbBriqueVoutinParMetre2:6.5,
+            prixUnitaireBriqueVoutin:5.45
         };
 
         this.state = {
