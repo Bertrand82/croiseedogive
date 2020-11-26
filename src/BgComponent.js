@@ -7,8 +7,6 @@ import DatGui, {
 } from 'react-dat-gui';
 import React, { Component } from 'react';
 
-import BgParam from './BgParametres';
-import ThreeSceneBg from './BgThreeScene';
 /**
  * Demonstrates presets that extend the default preset (initial state)
  * as well as presets which extend the current state
@@ -50,8 +48,7 @@ class BgComponent extends Component {
 
     return (
       <main style={{ marginRight: '350px' }}>
-        <BgParam data={data} />
-
+       
         <DatGui data={data} onUpdate={this.handleUpdate}>
 
            <DatNumber 

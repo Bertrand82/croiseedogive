@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TrackballControls from './TrackballControls';
 import BgComponent from './BgComponent';
+import BgCalculVoute from './BgCalculVoute';
 import * as THREE from 'three';
 
 
@@ -220,7 +221,7 @@ class BgThreeScene extends Component {
     render() {
         return (
             <div>
-                <BgComponent updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}"/>
+                <BgCalculVoute updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}"/>
                 <div
                     style={{ width: '300px', height: '300px', backgroundColor: "yellow" }}
                     ref={(mount) => { this.mount = mount }}
