@@ -56,7 +56,7 @@ class BgCalculVoute extends Component {
     }
 
     calculLongueurArreteTotal = function (data) {
-        var hExtrados = data.hauteurExtrados;
+        
         var l = 0;
         l += 2 * data.longueurTotaleArreteCote_a;
         l += 2 * data.longueurTotaleArreteCote_b;
@@ -65,7 +65,6 @@ class BgCalculVoute extends Component {
     }
 
     calculSurfaceTotaleVoutins(data) {
-        var hExtrados = data.hauteurExtrados;
         var l_a = data.longueurTotaleArreteCote_a;
         var l_b = data.longueurTotaleArreteCote_b;
         var s = 0;
@@ -91,11 +90,11 @@ class BgCalculVoute extends Component {
         var total = data.nbTotalBriquesVoutins * data.prixUnitaireBriqueVoutin;
         return Number.parseFloat(total).toFixed(0);
     }
-    calculPrixTotal(data){
+    calculPrixTotal(data) {
         var total = 0;
-        
-        total+=  data.nbTotalBriquesNervures * data.prixUnitaireBriqueNervure;
-        total+=  data.nbTotalBriquesVoutins * data.prixUnitaireBriqueVoutin;
+
+        total += data.nbTotalBriquesNervures * data.prixUnitaireBriqueNervure;
+        total += data.nbTotalBriquesVoutins * data.prixUnitaireBriqueVoutin;
         return Number.parseFloat(total).toFixed(2);
     }
     calculVoute(data) {

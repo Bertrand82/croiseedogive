@@ -13,7 +13,13 @@ function App() {
       </header>
       
       <div>
-        <div>Cette application permet de définir les valeurs caractéristiques d'une croisee d'ogive en fonction de 3 parametres d'entrée: côté a, côté b, épaisseur des arrêtes</div>
+        <section> 
+          <div>Cette application permet de définir les valeurs caractéristiques d'une croisée d'ogive.</div>
+          <div>Les  paramètres d'entrée sont : côté a, côté b, épaisseur des arrêtes.</div>
+          <div>Les sorties sont les differents rayons de courbure et centres de courbure des coffrages.</div>
+          <div>Le nombre total de briques et le prix global sont évalués également .</div>
+
+        </section>
       <BgThreeScene />
       </div>
       
