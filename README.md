@@ -1,4 +1,6 @@
-Ce projet permet de visualiser en 3D une croisee d'ogive gothique
+Ce projet permet de visualiser en 3D une croisee d'ogive gothique.
+Il est visible : http://croiseedogive.fr/
+
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
