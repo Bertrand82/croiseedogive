@@ -1,6 +1,6 @@
-Ce projet permet de visualiser en 3D une croisee d'ogive gothique.
+Ce projet permet de visualiser en 3D une croisee d'ogives gothique.
 
-Il est visible : http://croiseedogive.fr/
+Il est visible : http://croiseedogives.fr/
 
 
 

@@ -1,0 +1,32 @@
+stages:
+  - build
+  - deploy
+
+
+build:
+  stage: build
+  image: node:16
+  script: 
+    - echo "Start building App"
+    - npm install --progress=false
+    - npm run build
+    - echo "Build successfully!"
+# https://gitlab.com/brendan-demo/labwork/homepage/-/blob/main/.gitlab-ci.yml
+
+bg1:
+# il faut renseigner FIREBASE_TOKEN dans settings/CI/variables.
+# La valeur de la clé est recupérée a partir de la console >firebase login:ci (puis ouvrir l'url click sur allow, revenir sur la console et copier la valeur)
+  stage: deploy
+  image: node:16  
+  script:
+    - echo "Deploy to firebase start"
+    - ls
+    - npm install --progress=false
+    - npm run build
+    - ls
+    - npm i -g firebase-tools
+    - pwd
+    - echo "Deploy no Implemented yet"
+    - firebase deploy --project croiseedogives --token $FIREBASE_TOKEN
+
+
