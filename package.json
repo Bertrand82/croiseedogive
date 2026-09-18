@@ -17,9 +17,14 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "node --openssl-legacy-provider ./node_modules/react-scripts/scripts/build.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "overrides": {
+    "react-scripts": {
+      "postcss-safe-parser": "4.0.2"
+    }
   },
   "eslintConfig": {
     "extends": [
