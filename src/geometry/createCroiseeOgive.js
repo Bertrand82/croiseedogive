@@ -6,6 +6,12 @@ function validatePositiveDimension(name, value) {
   }
 }
 
+function validateInnerRadius(name, radius) {
+  if (radius <= 0) {
+    throw new Error(`${name} must stay positive after subtracting the rib thickness.`);
+  }
+}
+
 /**
  * Build the croisée d'ogive geometry.
  *
@@ -69,14 +75,17 @@ export function createSimpleCroiseeOgive({ cote_a, cote_b, e_nervure }) {
   const rTierPoint2 = (b * b + hauteur * hauteur) / (2 * b);
   const dx2 = (cote_b / 2) - rTierPoint2;
   const teta2 = Math.asin(hauteur / rTierPoint2);
+  const rayonTierPoint2 = rTierPoint2 - e_nervure;
 
-  const torusTiersPointGeometry21 = new THREE.TorusBufferGeometry(rTierPoint2 - e_nervure, e_nervure, 5, 100, teta2);
+  validateInnerRadius('side-b rib radius', rayonTierPoint2);
+
+  const torusTiersPointGeometry21 = new THREE.TorusBufferGeometry(rayonTierPoint2, e_nervure, 5, 100, teta2);
   torusTiersPointGeometry21.translate(dx2, 0, -(cote_a / 2 - e_nervure));
-  const torusTiersPointGeometry22 = new THREE.TorusBufferGeometry(rTierPoint2 - e_nervure, e_nervure, 5, 100, teta2);
+  const torusTiersPointGeometry22 = new THREE.TorusBufferGeometry(rayonTierPoint2, e_nervure, 5, 100, teta2);
   torusTiersPointGeometry22.translate(dx2, 0, cote_a / 2 - e_nervure);
-  const torusTiersPointGeometry31 = new THREE.TorusBufferGeometry(rTierPoint2 - e_nervure, e_nervure, 5, 100, teta2);
+  const torusTiersPointGeometry31 = new THREE.TorusBufferGeometry(rayonTierPoint2, e_nervure, 5, 100, teta2);
   torusTiersPointGeometry31.translate(dx2, 0, cote_a / 2 - e_nervure);
-  const torusTiersPointGeometry32 = new THREE.TorusBufferGeometry(rTierPoint2 - e_nervure, e_nervure, 5, 100, teta2);
+  const torusTiersPointGeometry32 = new THREE.TorusBufferGeometry(rayonTierPoint2, e_nervure, 5, 100, teta2);
   torusTiersPointGeometry32.translate(dx2, 0, -(cote_a / 2 - e_nervure));
 
   const torusTiersPoint21 = new THREE.Mesh(torusTiersPointGeometry21, torusMaterial2);

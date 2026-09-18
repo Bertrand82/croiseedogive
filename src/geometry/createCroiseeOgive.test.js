@@ -51,5 +51,11 @@ describe('createSimpleCroiseeOgive', () => {
       cote_a: 2,
       cote_b: 3
     })).toThrow('e_nervure must be a positive number expressed in meters.');
+
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 2,
+      cote_b: 0.2,
+      e_nervure: 6
+    })).toThrow('side-b rib radius must stay positive after subtracting the rib thickness.');
   });
 });

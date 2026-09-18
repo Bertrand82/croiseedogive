@@ -35,6 +35,8 @@ class BgThreeScene extends Component {
 
 
     componentDidMount() {
+        const hasWindow = typeof window !== 'undefined';
+
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(
             75,
@@ -45,7 +47,7 @@ class BgThreeScene extends Component {
         this.camera.position.z = 4;
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setClearColor('#110000');
-        this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+        this.renderer.setPixelRatio(hasWindow ? window.devicePixelRatio || 1 : 1);
         this.mount.appendChild(this.renderer.domElement);
 
         this.controls = new TrackballControls(this.camera, this.renderer.domElement);
@@ -53,7 +55,9 @@ class BgThreeScene extends Component {
         this.updateSceneSize();
         this.replaceCroiseeOgive(this.state.data);
 
-        window.addEventListener('resize', this.updateSceneSize);
+        if (hasWindow) {
+            window.addEventListener('resize', this.updateSceneSize);
+        }
         this.start();
 
     }
@@ -119,7 +123,9 @@ class BgThreeScene extends Component {
     }
     componentWillUnmount() {
         this.stop();
-        window.removeEventListener('resize', this.updateSceneSize);
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('resize', this.updateSceneSize);
+        }
 
         if (this.controls) {
             this.controls.dispose();
@@ -150,7 +156,9 @@ class BgThreeScene extends Component {
         // this.cylindre.rotation.x += 0.01
         // this.cylindre.rotation.y += 0.01
         this.renderScene()
-        this.frameId = window.requestAnimationFrame(this.animate);
+        if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+            this.frameId = window.requestAnimationFrame(this.animate);
+        }
         this.controls.update();
     }
     renderScene = () => {
@@ -165,9 +173,9 @@ class BgThreeScene extends Component {
                 e_nervure: Object.prototype.hasOwnProperty.call(payload, 'e_nervure') ? payload.e_nervure : this.state.data.e_nervure
             }
             : {
-                cote_a,
-                cote_b,
-                e_nervure
+                cote_a: cote_a === undefined ? this.state.data.cote_a : cote_a,
+                cote_b: cote_b === undefined ? this.state.data.cote_b : cote_b,
+                e_nervure: e_nervure === undefined ? this.state.data.e_nervure : e_nervure
             };
 
         var newData = {
