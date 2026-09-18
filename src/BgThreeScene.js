@@ -157,11 +157,12 @@ class BgThreeScene extends Component {
         this.renderer.render(this.scene, this.camera)
     }
     updateParam = (cote_a, cote_b, e_nervure) => {
-        const nextDimensions = typeof cote_a === 'object'
+        const payload = typeof cote_a === 'object' ? cote_a : null;
+        const nextDimensions = payload
             ? {
-                cote_a: cote_a.cote_a,
-                cote_b: cote_a.cote_b,
-                e_nervure: cote_a.e_nervure
+                cote_a: Object.prototype.hasOwnProperty.call(payload, 'cote_a') ? payload.cote_a : this.state.data.cote_a,
+                cote_b: Object.prototype.hasOwnProperty.call(payload, 'cote_b') ? payload.cote_b : this.state.data.cote_b,
+                e_nervure: Object.prototype.hasOwnProperty.call(payload, 'e_nervure') ? payload.e_nervure : this.state.data.e_nervure
             }
             : {
                 cote_a,
@@ -171,6 +172,7 @@ class BgThreeScene extends Component {
 
         var newData = {
             ...this.state.data,
+            ...(payload || {}),
             ...nextDimensions
         };
         this.setState({ data: newData });

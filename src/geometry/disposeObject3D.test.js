@@ -25,6 +25,22 @@ describe('disposeObject3D', () => {
     expect(materialDisposeSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('disposes shared textures only once across the same object graph', () => {
+    const group = new THREE.Group();
+    const sharedTexture = new THREE.Texture();
+    const firstMaterial = new THREE.MeshBasicMaterial({ map: sharedTexture });
+    const secondMaterial = new THREE.MeshBasicMaterial({ map: sharedTexture });
+
+    group.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), firstMaterial));
+    group.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), secondMaterial));
+
+    const sharedTextureDisposeSpy = jest.spyOn(sharedTexture, 'dispose');
+
+    disposeObject3D(group);
+
+    expect(sharedTextureDisposeSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('recursively disposes geometries, materials and textures', () => {
     const group = new THREE.Group();
     const geometry = new THREE.BoxGeometry(1, 1, 1);

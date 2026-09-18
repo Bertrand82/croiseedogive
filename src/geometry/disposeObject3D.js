@@ -1,41 +1,59 @@
-function disposeMaterial(material) {
+const MATERIAL_TEXTURE_KEYS = [
+  'alphaMap',
+  'aoMap',
+  'bumpMap',
+  'displacementMap',
+  'emissiveMap',
+  'envMap',
+  'gradientMap',
+  'lightMap',
+  'map',
+  'metalnessMap',
+  'normalMap',
+  'roughnessMap',
+  'specularMap'
+];
+
+function disposeTextureValue(value, disposedTextures, visitedValues) {
+  if (!value || typeof value !== 'object') {
+    return;
+  }
+
+  if (visitedValues.has(value)) {
+    return;
+  }
+
+  visitedValues.add(value);
+
+  if (value.isTexture && typeof value.dispose === 'function') {
+    if (!disposedTextures.has(value)) {
+      disposedTextures.add(value);
+      value.dispose();
+    }
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((entry) => disposeTextureValue(entry, disposedTextures, visitedValues));
+    return;
+  }
+
+  Object.values(value).forEach((entry) => disposeTextureValue(entry, disposedTextures, visitedValues));
+}
+
+function disposeMaterial(material, disposedTextures) {
   if (!material) {
     return;
   }
 
-  const visited = new WeakSet();
+  const visitedValues = new WeakSet();
 
-  const disposeOwnedTextures = (value) => {
-    if (!value || typeof value !== 'object') {
-      return;
-    }
-
-    if (visited.has(value)) {
-      return;
-    }
-
-    visited.add(value);
-
-    if (value.isTexture && typeof value.dispose === 'function') {
-      value.dispose();
-      return;
-    }
-
-    if (Array.isArray(value)) {
-      value.forEach(disposeOwnedTextures);
-      return;
-    }
-
-    Object.values(value).forEach(disposeOwnedTextures);
-  };
-
-  Object.keys(material).forEach((key) => {
-    disposeOwnedTextures(material[key]);
+  MATERIAL_TEXTURE_KEYS.forEach((key) => {
+    disposeTextureValue(material[key], disposedTextures, visitedValues);
   });
 
-  if (material.userData) {
-    disposeOwnedTextures(material.userData);
-  }
+  disposeTextureValue(material.uniforms, disposedTextures, visitedValues);
+  disposeTextureValue(material.userData, disposedTextures, visitedValues);
 
   if (typeof material.dispose === 'function') {
     material.dispose();
@@ -47,16 +65,18 @@ export default function disposeObject3D(object3D) {
     return;
   }
 
+  const disposedTextures = new WeakSet();
+
   object3D.traverse((node) => {
     if (node.geometry && typeof node.geometry.dispose === 'function') {
       node.geometry.dispose();
     }
 
     if (Array.isArray(node.material)) {
-      node.material.forEach(disposeMaterial);
+      node.material.forEach((material) => disposeMaterial(material, disposedTextures));
       return;
     }
 
-    disposeMaterial(node.material);
+    disposeMaterial(node.material, disposedTextures);
   });
 }
