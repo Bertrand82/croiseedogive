@@ -16,7 +16,7 @@ class BgComponent extends Component {
   constructor(props) {
     super(props);
 
-    const initialState = {
+    const defaultData = {
       cote_a: 200,
       cote_b: 200,
       e_nervure: 10,
@@ -25,6 +25,7 @@ class BgComponent extends Component {
       nbBriqueVoutinParMetre2:6.5,
       prixUnitaireBriqueVoutin:5.45
     };
+    const initialState = props.data ? { ...defaultData, ...props.data } : defaultData;
 
     this.state = {
       data: initialState,
@@ -35,12 +36,12 @@ class BgComponent extends Component {
 
   // Update current state with changes from controls
   handleUpdate = newData => {
-    this.setState(prevState => ({
-      data: { ...prevState.data, ...newData }
-    })
-    );
+    const updatedData = { ...this.state.data, ...newData };
+    this.setState({
+      data: updatedData
+    });
     // Update parent
-    this.props.updateParam(this.state.data);
+    this.props.updateParam(updatedData);
   }
 
   render() {

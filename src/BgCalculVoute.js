@@ -4,7 +4,7 @@ class BgCalculVoute extends Component {
     constructor(props) {
         super(props);
 
-        const initialState = {
+        const defaultData = {
             cote_a: 200,
             cote_b: 200,
             e_nervure: 10,
@@ -14,6 +14,7 @@ class BgCalculVoute extends Component {
             nbBriqueVoutinParMetre2: 6.5,
             prixUnitaireBriqueVoutin: 5.45
         };
+        const initialState = props.data ? { ...defaultData, ...props.data } : defaultData;
 
         this.state = {
             data: initialState,
@@ -98,38 +99,32 @@ class BgCalculVoute extends Component {
         return Number.parseFloat(total).toFixed(2);
     }
     calculVoute(data) {
-        data.diagonale = this.calculDiagonale(data);
-        data.hauteurExtrados = this.calculHauteurExtrados(data);
-        data.centre_a = this.calculCentre(data.cote_a, data.hauteurExtrados);
-        data.centre_b = this.calculCentre(data.cote_b, data.hauteurExtrados);
-        data.rayon_a = this.calculRayon(data.centre_a, data.e_nervure);
-        data.rayon_b = this.calculRayon(data.centre_b, data.e_nervure);
-        data.rayonDiagonale = this.calculRayonDiagonale(data);
-        data.longueurTotaleArreteCote_a = this.calculLongueurTotaleNervureArreteCote(data.hauteurExtrados, data.centre_a, data.rayon_a)
-        data.longueurTotaleArreteCote_b = this.calculLongueurTotaleNervureArreteCote(data.hauteurExtrados, data.centre_b, data.rayon_b)
-        data.longueurTotaleArreteDiagonale = this.calculLongueurTotaleNervureDiagonale(data);
-        data.longueurTotaleArrete = this.calculLongueurArreteTotal(data);
-        data.surfaceTotaleVoutins = this.calculSurfaceTotaleVoutins(data);
-        data.nbTotalBriquesNervures = this.calculNbTotalBriquesNervures(data);
-        data.prixTotalBriquesNervures = this.calculPrixTotalBriquesNervures(data);
-        data.nbTotalBriquesVoutins = this.calculNbTotalBriquesVoutins(data);
-        data.prixTotalBriquesVoutins = this.calculPrixTotalBriquesVoutins(data);
-        data.prixTotalBriques = this.calculPrixTotal(data);
-        return data;
+        const calculatedData = { ...data };
+        calculatedData.diagonale = this.calculDiagonale(calculatedData);
+        calculatedData.hauteurExtrados = this.calculHauteurExtrados(calculatedData);
+        calculatedData.centre_a = this.calculCentre(calculatedData.cote_a, calculatedData.hauteurExtrados);
+        calculatedData.centre_b = this.calculCentre(calculatedData.cote_b, calculatedData.hauteurExtrados);
+        calculatedData.rayon_a = this.calculRayon(calculatedData.centre_a, calculatedData.e_nervure);
+        calculatedData.rayon_b = this.calculRayon(calculatedData.centre_b, calculatedData.e_nervure);
+        calculatedData.rayonDiagonale = this.calculRayonDiagonale(calculatedData);
+        calculatedData.longueurTotaleArreteCote_a = this.calculLongueurTotaleNervureArreteCote(calculatedData.hauteurExtrados, calculatedData.centre_a, calculatedData.rayon_a)
+        calculatedData.longueurTotaleArreteCote_b = this.calculLongueurTotaleNervureArreteCote(calculatedData.hauteurExtrados, calculatedData.centre_b, calculatedData.rayon_b)
+        calculatedData.longueurTotaleArreteDiagonale = this.calculLongueurTotaleNervureDiagonale(calculatedData);
+        calculatedData.longueurTotaleArrete = this.calculLongueurArreteTotal(calculatedData);
+        calculatedData.surfaceTotaleVoutins = this.calculSurfaceTotaleVoutins(calculatedData);
+        calculatedData.nbTotalBriquesNervures = this.calculNbTotalBriquesNervures(calculatedData);
+        calculatedData.prixTotalBriquesNervures = this.calculPrixTotalBriquesNervures(calculatedData);
+        calculatedData.nbTotalBriquesVoutins = this.calculNbTotalBriquesVoutins(calculatedData);
+        calculatedData.prixTotalBriquesVoutins = this.calculPrixTotalBriquesVoutins(calculatedData);
+        calculatedData.prixTotalBriques = this.calculPrixTotal(calculatedData);
+        return calculatedData;
     }
 
     updateParam = (d) => {
-        console.log("updateParam2 ----- a: " + d.cote_a + "  b: " + d.cote_b + "  e: " + d.e_nervure);
-        var newData = this.state.data;
-        newData.cote_a = d.cote_a;
-        newData.cote_b = d.cote_b;
-        newData.e_nervure = d.e_nervure;
-        newData.nbBriqueNervureParMetre = d.nbBriqueNervureParMetre;
-        newData.prixUnitaireBriqueNervure = d.prixUnitaireBriqueNervure;
-        newData.nbBriqueVoutinParMetre2 = d.nbBriqueVoutinParMetre2;
-        newData.prixUnitaireBriqueVoutin = d.prixUnitaireBriqueVoutin;
+        const newData = { ...this.state.data, ...d };
+        console.log("updateParam2 ----- a: " + newData.cote_a + "  b: " + newData.cote_b + "  e: " + newData.e_nervure);
         this.setState({ data: newData });
-        this.props.updateParam(this.state.data.cote_a, this.state.data.cote_b, this.state.data.e_nervure);
+        this.props.updateParam(newData);
         ;
     }
 
@@ -252,7 +247,7 @@ class BgCalculVoute extends Component {
 
 
                 </table>
-                <BgComponent updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}" />
+                <BgComponent updateParam={this.updateParam} data={data} cote_a={data.cote_a} />
 
             </section>
         );

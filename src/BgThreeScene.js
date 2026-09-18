@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TrackballControls from './TrackballControls';
-import BgComponent from './BgComponent';
 import BgCalculVoute from './BgCalculVoute';
 import * as THREE from 'three';
 
@@ -210,22 +209,19 @@ class BgThreeScene extends Component {
     renderScene = () => {
         this.renderer.render(this.scene, this.camera)
     }
-    updateParam = (cote_a, cote_b, e_nervure) => {
-        console.log("updateParam ----- a: " + cote_a + "  b: " + cote_b + "  e: " + e_nervure);
-        var newData = this.state.data;
-        newData.cote_a = cote_a;
-        newData.cote_b = cote_b;
-        newData.e_nervure = e_nervure;
-        this.setState({ data: newData });
+    updateParam = (newData) => {
+        const updatedData = { ...this.state.data, ...newData };
+        console.log("updateParam ----- a: " + updatedData.cote_a + "  b: " + updatedData.cote_b + "  e: " + updatedData.e_nervure);
+        this.setState({ data: updatedData });
         this.scene.remove(this.croiseeOgive);
 
-        this.croiseeOgive = this.createSimpleCroiseeOgive(cote_a / 100, cote_b / 100, e_nervure / 100);
+        this.croiseeOgive = this.createSimpleCroiseeOgive(updatedData.cote_a / 100, updatedData.cote_b / 100, updatedData.e_nervure / 100);
         this.scene.add(this.croiseeOgive);
     }
     render() {
         return (
             <div>
-                <BgCalculVoute updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}"/>
+                <BgCalculVoute updateParam={this.updateParam} data={this.state.data} cote_a={this.state.data.cote_a}/>
                 <div
                     style={{ width: '300px', height: '300px', backgroundColor: "yellow" }}
                     ref={(mount) => { this.mount = mount }}
