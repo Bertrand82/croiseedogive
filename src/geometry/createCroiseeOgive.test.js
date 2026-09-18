@@ -1,0 +1,61 @@
+import * as THREE from 'three';
+import createSimpleCroiseeOgive from './createCroiseeOgive';
+
+describe('createSimpleCroiseeOgive', () => {
+  it('returns a Three.js object without relying on the DOM', () => {
+    const previousDocument = global.document;
+
+    global.document = undefined;
+
+    try {
+      const object3D = createSimpleCroiseeOgive({
+        cote_a: 2,
+        cote_b: 3,
+        e_nervure: 0.1
+      });
+
+      expect(object3D).toBeInstanceOf(THREE.Object3D);
+    } finally {
+      global.document = previousDocument;
+    }
+  });
+
+  it('preserves the expected top-level geometry structure', () => {
+    const object3D = createSimpleCroiseeOgive({
+      cote_a: 2,
+      cote_b: 3,
+      e_nervure: 0.1
+    });
+
+    expect(object3D).toBeInstanceOf(THREE.Mesh);
+    expect(object3D.geometry.type).toBe('CylinderGeometry');
+    expect(object3D.children).toHaveLength(7);
+    expect(object3D.children[0].geometry.parameters.arc).toBeCloseTo(Math.PI);
+    expect(object3D.children[1].geometry.parameters.arc).toBeCloseTo(Math.PI);
+  });
+
+  it('rejects missing or non-positive dimensions', () => {
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 0,
+      cote_b: 3,
+      e_nervure: 0.1
+    })).toThrow('cote_a must be a positive number expressed in meters.');
+
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 2,
+      cote_b: -1,
+      e_nervure: 0.1
+    })).toThrow('cote_b must be a positive number expressed in meters.');
+
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 2,
+      cote_b: 3
+    })).toThrow('e_nervure must be a positive number expressed in meters.');
+
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 2,
+      cote_b: 0.2,
+      e_nervure: 6
+    })).toThrow('side-b rib radius must stay positive after subtracting the rib thickness.');
+  });
+});

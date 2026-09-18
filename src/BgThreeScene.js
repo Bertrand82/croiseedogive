@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import TrackballControls from './TrackballControls';
-import BgComponent from './BgComponent';
 import BgCalculVoute from './BgCalculVoute';
 import * as THREE from 'three';
+import createSimpleCroiseeOgive from './geometry/createCroiseeOgive';
+import disposeObject3D from './geometry/disposeObject3D';
 
 
 
@@ -34,28 +35,29 @@ class BgThreeScene extends Component {
 
 
     componentDidMount() {
-        const width = 2 * this.mount.clientWidth;
-        const height = 2 * this.mount.clientHeight;
+        const hasWindow = typeof window !== 'undefined';
 
-        //ADD SCENE
         this.scene = new THREE.Scene();
-        //ADD CAMERA
         this.camera = new THREE.PerspectiveCamera(
             75,
-            width / height,
+            1,
             0.1,
             1000
         );
         this.camera.position.z = 4;
-        //ADD RENDERER 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true })
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setClearColor('#110000');
-        this.renderer.setSize(width, height);
+        this.renderer.setPixelRatio(hasWindow ? window.devicePixelRatio || 1 : 1);
         this.mount.appendChild(this.renderer.domElement);
-        //ADD CROISEE        
-        this.createCroisees();
+
         this.controls = new TrackballControls(this.camera, this.renderer.domElement);
         this.initControls();
+        this.updateSceneSize();
+        this.replaceCroiseeOgive(this.state.data);
+
+        if (hasWindow) {
+            window.addEventListener('resize', this.updateSceneSize);
+        }
         this.start();
 
     }
@@ -63,111 +65,42 @@ class BgThreeScene extends Component {
     
     croiseeOgive;
 
-    createCroisees() {
-        let cote1 = this.state.data.cote_a/100;
-        let cote2 = this.state.data.cote_b/100;
-        let e = this.state.data.e_nervure/100;
-      
-        this.croiseeOgive = this.createSimpleCroiseeOgive(cote1, cote2, e);
-        this.scene.add(this.croiseeOgive);
-        /*for (let i = 0; i < 4; i++) {
-            var cleClone = cle.clone(true);
-            cleClone.translateX(i * cote1);
-            this.scene.add(cleClone);
-        }*/
+    getGeometryDimensions(data) {
+        return {
+            cote_a: data.cote_a / 100,
+            cote_b: data.cote_b / 100,
+            e_nervure: data.e_nervure / 100
+        };
     }
 
-    createSimpleCroiseeOgive(cote1, cote2, ep) {
+    createCroisees(data) {
+        this.croiseeOgive = createSimpleCroiseeOgive(this.getGeometryDimensions(data));
+        this.scene.add(this.croiseeOgive);
+    }
 
-        let phi = Math.atan(cote2 / cote1);
-        let diagonale = Math.sqrt(cote1 * cote1 + cote2 * cote2);
-        let hauteur = diagonale / 2;
+    replaceCroiseeOgive(data) {
+        if (this.croiseeOgive) {
+            this.scene.remove(this.croiseeOgive);
+            disposeObject3D(this.croiseeOgive);
+        }
 
+        this.createCroisees(data);
+    }
 
-        var torusMmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
-        var torusMmaterial2 = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-        var torusMmaterial3 = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
-        var hCube = 0.01;
-        var cubeGeometry = new THREE.CubeGeometry(cote1, hCube, cote2);
-        cubeGeometry.translate(0, -hCube / 2, 0);
-        var cube = new THREE.Mesh(cubeGeometry, torusMmaterial);
-        var croixGeometry1 = new THREE.CubeGeometry(cote1, 0.01, 0.01);
-        var croixGeometry2 = new THREE.CubeGeometry(0.01, 0.01, cote2);
-        croixGeometry1.translate(0, hauteur, 0);
-        croixGeometry2.translate(0, hauteur, 0);
-        var croix1 = new THREE.Mesh(croixGeometry1, torusMmaterial);
-        var croix2 = new THREE.Mesh(croixGeometry2, torusMmaterial);
+    updateSceneSize = () => {
+        if (!this.mount || !this.camera || !this.renderer) {
+            return;
+        }
 
-        var a1 = cote1 / 2;
-        var rTierPoint1 = (a1 * a1 + hauteur * hauteur) / (2 * a1);
-        var dx1 = ((cote1 / 2) - rTierPoint1);
-        var teta1 = Math.asin(hauteur / rTierPoint1);
+        const width = this.mount.clientWidth || 300;
+        const height = this.mount.clientHeight || 300;
 
-        var torusTiersPointGeometry01 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry01.translate(dx1, 0, -(cote2 / 2-ep));
-        var torusTiersPointGeometry02 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry02.translate(dx1, 0, cote2 / 2-ep);
-        var torusTiersPointGeometry11 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry11.translate(dx1, 0, cote2 / 2-ep);
-        var torusTiersPointGeometry12 = new THREE.TorusBufferGeometry(rTierPoint1, ep, 5, 100, teta1);
-        torusTiersPointGeometry12.translate(dx1, 0, -(cote2 / 2-ep));
-        var torusTiersPoint01 = new THREE.Mesh(torusTiersPointGeometry01, torusMmaterial);
-        var torusTiersPoint02 = new THREE.Mesh(torusTiersPointGeometry02, torusMmaterial);
-        var torusTiersPoint11 = new THREE.Mesh(torusTiersPointGeometry11, torusMmaterial);
-        var torusTiersPoint12 = new THREE.Mesh(torusTiersPointGeometry12, torusMmaterial);
-        torusTiersPoint02.rotation.z += Math.PI;
-        torusTiersPoint02.rotation.x += Math.PI;
-        torusTiersPoint12.rotation.z += Math.PI;
-        torusTiersPoint12.rotation.x += Math.PI;
-        torusTiersPoint01.add(torusTiersPoint02);
-        torusTiersPoint01.add(torusTiersPoint11);
-        torusTiersPoint01.add(torusTiersPoint12);
-
-        var b = cote2 / 2;
-        var rTierPoint2 = (b * b + hauteur * hauteur) / (2 * b);
-        var dx2 = ((cote2 / 2) - rTierPoint2);
-        var teta2 = Math.asin(hauteur / rTierPoint2);
-        var torusTiersPointGeometry21 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
-        torusTiersPointGeometry21.translate(dx2, 0, -(cote1 / 2-ep));
-        var torusTiersPointGeometry22 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
-        torusTiersPointGeometry22.translate(dx2, 0, cote1 / 2-ep);
-        var torusTiersPointGeometry31 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
-        torusTiersPointGeometry31.translate(dx2, 0, cote1 / 2-ep);
-        var torusTiersPointGeometry32 = new THREE.TorusBufferGeometry(rTierPoint2-ep, ep, 5, 100, teta2);
-        torusTiersPointGeometry32.translate(dx2, 0, -(cote1 / 2-ep));
-        var torusTiersPoint21 = new THREE.Mesh(torusTiersPointGeometry21, torusMmaterial2);
-        var torusTiersPoint22 = new THREE.Mesh(torusTiersPointGeometry22, torusMmaterial2);
-        var torusTiersPoint31 = new THREE.Mesh(torusTiersPointGeometry31, torusMmaterial2);
-        var torusTiersPoint32 = new THREE.Mesh(torusTiersPointGeometry32, torusMmaterial2);
-        torusTiersPoint22.rotation.z += Math.PI;
-        torusTiersPoint22.rotation.x += Math.PI;
-        torusTiersPoint32.rotation.z += Math.PI;
-        torusTiersPoint32.rotation.x += Math.PI;
-
-        torusTiersPoint21.add(torusTiersPoint22);
-        torusTiersPoint21.add(torusTiersPoint31);
-        torusTiersPoint21.add(torusTiersPoint32);
-        torusTiersPoint21.rotation.y = Math.PI / 2;
-
-        var torusCroiseeGeometry = new THREE.TorusBufferGeometry((diagonale / 2)-ep/2, ep, 5, 100, Math.PI);
-        var torusCroisee1 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial3);
-        var torusCroisee2 = new THREE.Mesh(torusCroiseeGeometry, torusMmaterial3);
-        torusCroisee1.rotation.y += phi;
-        torusCroisee2.rotation.y += -phi;
-        var cleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.01);
-        cleGeometry.translate(0, hauteur, 0);
-        var cleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
-        var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
-
-
-        cle.add(torusCroisee1);
-        cle.add(torusCroisee2);
-        cle.add(torusTiersPoint01);
-        cle.add(torusTiersPoint21);
-        cle.add(cube);
-        cle.add(croix1);
-        cle.add(croix2);
-        return cle;
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(width, height);
+        if (this.controls) {
+            this.controls.handleResize();
+        }
     }
 
     initControls() {
@@ -189,8 +122,26 @@ class BgThreeScene extends Component {
         this.controls.handleResize();
     }
     componentWillUnmount() {
-        this.stop()
-        this.mount.removeChild(this.renderer.domElement)
+        this.stop();
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('resize', this.updateSceneSize);
+        }
+
+        if (this.controls) {
+            this.controls.dispose();
+        }
+
+        if (this.croiseeOgive) {
+            this.scene.remove(this.croiseeOgive);
+            disposeObject3D(this.croiseeOgive);
+        }
+
+        if (this.renderer) {
+            this.renderer.dispose();
+            if (this.mount && this.renderer.domElement.parentNode === this.mount) {
+                this.mount.removeChild(this.renderer.domElement);
+            }
+        }
     }
     start = () => {
         if (!this.frameId) {
@@ -199,33 +150,48 @@ class BgThreeScene extends Component {
     }
     stop = () => {
         cancelAnimationFrame(this.frameId)
+        this.frameId = null;
     }
     animate = () => {
         // this.cylindre.rotation.x += 0.01
         // this.cylindre.rotation.y += 0.01
         this.renderScene()
-        this.frameId = window.requestAnimationFrame(this.animate);
+        if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+            this.frameId = window.requestAnimationFrame(this.animate);
+        }
         this.controls.update();
     }
     renderScene = () => {
         this.renderer.render(this.scene, this.camera)
     }
     updateParam = (cote_a, cote_b, e_nervure) => {
-        console.log("updateParam ----- a: " + cote_a + "  b: " + cote_b + "  e: " + e_nervure);
-        var newData = this.state.data;
-        newData.cote_a = cote_a;
-        newData.cote_b = cote_b;
-        newData.e_nervure = e_nervure;
-        this.setState({ data: newData });
-        this.scene.remove(this.croiseeOgive);
+        const payload = typeof cote_a === 'object' ? cote_a : null;
+        const nextDimensions = payload
+            ? {
+                cote_a: Object.prototype.hasOwnProperty.call(payload, 'cote_a') ? payload.cote_a : this.state.data.cote_a,
+                cote_b: Object.prototype.hasOwnProperty.call(payload, 'cote_b') ? payload.cote_b : this.state.data.cote_b,
+                e_nervure: Object.prototype.hasOwnProperty.call(payload, 'e_nervure') ? payload.e_nervure : this.state.data.e_nervure
+            }
+            : {
+                cote_a: cote_a === undefined ? this.state.data.cote_a : cote_a,
+                cote_b: cote_b === undefined ? this.state.data.cote_b : cote_b,
+                e_nervure: e_nervure === undefined ? this.state.data.e_nervure : e_nervure
+            };
 
-        this.croiseeOgive = this.createSimpleCroiseeOgive(cote_a / 100, cote_b / 100, e_nervure / 100);
-        this.scene.add(this.croiseeOgive);
+        var newData = {
+            ...this.state.data,
+            ...(payload || {}),
+            ...nextDimensions
+        };
+        this.setState({ data: newData });
+        this.replaceCroiseeOgive(newData);
     }
     render() {
+        const { data } = this.state;
+
         return (
             <div>
-                <BgCalculVoute updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}"/>
+                <BgCalculVoute updateParam={this.updateParam} data={data} />
                 <div
                     style={{ width: '300px', height: '300px', backgroundColor: "yellow" }}
                     ref={(mount) => { this.mount = mount }}

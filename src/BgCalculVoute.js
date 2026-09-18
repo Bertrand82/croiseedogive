@@ -16,7 +16,7 @@ class BgCalculVoute extends Component {
         };
 
         this.state = {
-            data: initialState,
+            data: { ...(props.data || initialState) },
         };
     }
 
@@ -98,39 +98,37 @@ class BgCalculVoute extends Component {
         return Number.parseFloat(total).toFixed(2);
     }
     calculVoute(data) {
-        data.diagonale = this.calculDiagonale(data);
-        data.hauteurExtrados = this.calculHauteurExtrados(data);
-        data.centre_a = this.calculCentre(data.cote_a, data.hauteurExtrados);
-        data.centre_b = this.calculCentre(data.cote_b, data.hauteurExtrados);
-        data.rayon_a = this.calculRayon(data.centre_a, data.e_nervure);
-        data.rayon_b = this.calculRayon(data.centre_b, data.e_nervure);
-        data.rayonDiagonale = this.calculRayonDiagonale(data);
-        data.longueurTotaleArreteCote_a = this.calculLongueurTotaleNervureArreteCote(data.hauteurExtrados, data.centre_a, data.rayon_a)
-        data.longueurTotaleArreteCote_b = this.calculLongueurTotaleNervureArreteCote(data.hauteurExtrados, data.centre_b, data.rayon_b)
-        data.longueurTotaleArreteDiagonale = this.calculLongueurTotaleNervureDiagonale(data);
-        data.longueurTotaleArrete = this.calculLongueurArreteTotal(data);
-        data.surfaceTotaleVoutins = this.calculSurfaceTotaleVoutins(data);
-        data.nbTotalBriquesNervures = this.calculNbTotalBriquesNervures(data);
-        data.prixTotalBriquesNervures = this.calculPrixTotalBriquesNervures(data);
-        data.nbTotalBriquesVoutins = this.calculNbTotalBriquesVoutins(data);
-        data.prixTotalBriquesVoutins = this.calculPrixTotalBriquesVoutins(data);
-        data.prixTotalBriques = this.calculPrixTotal(data);
-        return data;
+        const computedData = { ...data };
+
+        computedData.diagonale = this.calculDiagonale(computedData);
+        computedData.hauteurExtrados = this.calculHauteurExtrados(computedData);
+        computedData.centre_a = this.calculCentre(computedData.cote_a, computedData.hauteurExtrados);
+        computedData.centre_b = this.calculCentre(computedData.cote_b, computedData.hauteurExtrados);
+        computedData.rayon_a = this.calculRayon(computedData.centre_a, computedData.e_nervure);
+        computedData.rayon_b = this.calculRayon(computedData.centre_b, computedData.e_nervure);
+        computedData.rayonDiagonale = this.calculRayonDiagonale(computedData);
+        computedData.longueurTotaleArreteCote_a = this.calculLongueurTotaleNervureArreteCote(computedData.hauteurExtrados, computedData.centre_a, computedData.rayon_a);
+        computedData.longueurTotaleArreteCote_b = this.calculLongueurTotaleNervureArreteCote(computedData.hauteurExtrados, computedData.centre_b, computedData.rayon_b);
+        computedData.longueurTotaleArreteDiagonale = this.calculLongueurTotaleNervureDiagonale(computedData);
+        computedData.longueurTotaleArrete = this.calculLongueurArreteTotal(computedData);
+        computedData.surfaceTotaleVoutins = this.calculSurfaceTotaleVoutins(computedData);
+        computedData.nbTotalBriquesNervures = this.calculNbTotalBriquesNervures(computedData);
+        computedData.prixTotalBriquesNervures = this.calculPrixTotalBriquesNervures(computedData);
+        computedData.nbTotalBriquesVoutins = this.calculNbTotalBriquesVoutins(computedData);
+        computedData.prixTotalBriquesVoutins = this.calculPrixTotalBriquesVoutins(computedData);
+        computedData.prixTotalBriques = this.calculPrixTotal(computedData);
+
+        return computedData;
     }
 
     updateParam = (d) => {
-        console.log("updateParam2 ----- a: " + d.cote_a + "  b: " + d.cote_b + "  e: " + d.e_nervure);
-        var newData = this.state.data;
-        newData.cote_a = d.cote_a;
-        newData.cote_b = d.cote_b;
-        newData.e_nervure = d.e_nervure;
-        newData.nbBriqueNervureParMetre = d.nbBriqueNervureParMetre;
-        newData.prixUnitaireBriqueNervure = d.prixUnitaireBriqueNervure;
-        newData.nbBriqueVoutinParMetre2 = d.nbBriqueVoutinParMetre2;
-        newData.prixUnitaireBriqueVoutin = d.prixUnitaireBriqueVoutin;
+        var newData = {
+            ...this.state.data,
+            ...d
+        };
         this.setState({ data: newData });
-        this.props.updateParam(this.state.data.cote_a, this.state.data.cote_b, this.state.data.e_nervure);
-        ;
+
+        this.props.updateParam(newData.cote_a, newData.cote_b, newData.e_nervure);
     }
 
 
@@ -252,7 +250,7 @@ class BgCalculVoute extends Component {
 
 
                 </table>
-                <BgComponent updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}" />
+                <BgComponent updateParam={this.updateParam} data={data} />
 
             </section>
         );

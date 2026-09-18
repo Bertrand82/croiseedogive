@@ -2,8 +2,6 @@ import 'react-dat-gui/dist/index.css';
 
 import DatGui, {
   DatNumber,
-  DatString,
-  DatButton,
   DatFolder
 } from 'react-dat-gui';
 import React, { Component } from 'react';
@@ -27,7 +25,7 @@ class BgComponent extends Component {
     };
 
     this.state = {
-      data: initialState,
+      data: { ...(props.data || initialState) },
       defaultData: initialState
     };
   }
@@ -35,16 +33,16 @@ class BgComponent extends Component {
 
   // Update current state with changes from controls
   handleUpdate = newData => {
-    this.setState(prevState => ({
-      data: { ...prevState.data, ...newData }
-    })
-    );
-    // Update parent
-    this.props.updateParam(this.state.data);
+    const mergedData = { ...this.state.data, ...newData };
+
+    this.setState({
+      data: mergedData
+    });
+    this.props.updateParam(mergedData);
   }
 
   render() {
-    const { data, defaultData } = this.state;
+    const { data } = this.state;
 
     return (
       <main style={{ marginRight: '350px' }}>
