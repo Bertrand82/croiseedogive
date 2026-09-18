@@ -28,6 +28,7 @@ class BgThreeScene extends Component {
             data: initialState,
             defaultData: initialState
         };
+        this.pendingData = initialState;
     }
 
 
@@ -209,16 +210,17 @@ class BgThreeScene extends Component {
     renderScene = () => {
         this.renderer.render(this.scene, this.camera)
     }
+    rebuildCroisee = (data) => {
+        this.scene.remove(this.croiseeOgive);
+        this.croiseeOgive = this.createSimpleCroiseeOgive(data.cote_a / 100, data.cote_b / 100, data.e_nervure / 100);
+        this.scene.add(this.croiseeOgive);
+    }
     updateParam = (newData) => {
-        this.setState(prevState => {
-            const updatedData = { ...prevState.data, ...newData };
-            console.log("updateParam ----- a: " + updatedData.cote_a + "  b: " + updatedData.cote_b + "  e: " + updatedData.e_nervure);
-            this.scene.remove(this.croiseeOgive);
-
-            this.croiseeOgive = this.createSimpleCroiseeOgive(updatedData.cote_a / 100, updatedData.cote_b / 100, updatedData.e_nervure / 100);
-            this.scene.add(this.croiseeOgive);
-            return { data: updatedData };
-        });
+        const updatedData = { ...this.pendingData, ...newData };
+        this.pendingData = updatedData;
+        console.log("updateParam ----- a: " + updatedData.cote_a + "  b: " + updatedData.cote_b + "  e: " + updatedData.e_nervure);
+        this.setState({ data: updatedData });
+        this.rebuildCroisee(updatedData);
     }
     render() {
         return (
