@@ -31,19 +31,18 @@ class BgComponent extends Component {
       data: initialState,
       defaultData: initialState
     };
+    this.pendingData = initialState;
   }
 
 
   // Update current state with changes from controls
   handleUpdate = newData => {
-    this.setState(prevState => {
-      const updatedData = { ...prevState.data, ...newData };
-      // Update parent
-      this.props.updateParam(updatedData);
-      return {
-        data: updatedData
-      };
+    const updatedData = { ...this.pendingData, ...newData };
+    this.pendingData = updatedData;
+    this.setState({
+      data: updatedData
     });
+    this.props.updateParam(updatedData);
   }
 
   render() {
