@@ -211,8 +211,38 @@ class BgThreeScene extends Component {
     renderScene = () => {
         this.renderer.render(this.scene, this.camera)
     }
+    disposeCroisee = (croiseeOgive) => {
+        if (!croiseeOgive) {
+            return;
+        }
+
+        const disposeNode = (node) => {
+            if (node.geometry && typeof node.geometry.dispose === 'function') {
+                node.geometry.dispose();
+            }
+
+            if (node.material) {
+                const materials = Array.isArray(node.material) ? node.material : [node.material];
+                materials.forEach(material => {
+                    if (material && typeof material.dispose === 'function') {
+                        material.dispose();
+                    }
+                });
+            }
+        };
+
+        if (typeof croiseeOgive.traverse === 'function') {
+            croiseeOgive.traverse(disposeNode);
+            return;
+        }
+
+        disposeNode(croiseeOgive);
+    }
     rebuildCroisee = (data) => {
-        this.scene.remove(this.croiseeOgive);
+        if (this.croiseeOgive) {
+            this.scene.remove(this.croiseeOgive);
+            this.disposeCroisee(this.croiseeOgive);
+        }
         this.croiseeOgive = this.createSimpleCroiseeOgive(data.cote_a / 100, data.cote_b / 100, data.e_nervure / 100);
         this.scene.add(this.croiseeOgive);
     }
