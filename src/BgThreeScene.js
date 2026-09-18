@@ -157,11 +157,21 @@ class BgThreeScene extends Component {
         this.renderer.render(this.scene, this.camera)
     }
     updateParam = (cote_a, cote_b, e_nervure) => {
+        const nextDimensions = typeof cote_a === 'object'
+            ? {
+                cote_a: cote_a.cote_a,
+                cote_b: cote_a.cote_b,
+                e_nervure: cote_a.e_nervure
+            }
+            : {
+                cote_a,
+                cote_b,
+                e_nervure
+            };
+
         var newData = {
             ...this.state.data,
-            cote_a,
-            cote_b,
-            e_nervure
+            ...nextDimensions
         };
         this.setState({ data: newData });
         this.replaceCroiseeOgive(newData);
