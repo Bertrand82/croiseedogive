@@ -33,4 +33,23 @@ describe('createSimpleCroiseeOgive', () => {
     expect(object3D.children[0].geometry.parameters.arc).toBeCloseTo(Math.PI);
     expect(object3D.children[1].geometry.parameters.arc).toBeCloseTo(Math.PI);
   });
+
+  it('rejects missing or non-positive dimensions', () => {
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 0,
+      cote_b: 3,
+      e_nervure: 0.1
+    })).toThrow('cote_a must be a positive number expressed in meters.');
+
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 2,
+      cote_b: -1,
+      e_nervure: 0.1
+    })).toThrow('cote_b must be a positive number expressed in meters.');
+
+    expect(() => createSimpleCroiseeOgive({
+      cote_a: 2,
+      cote_b: 3
+    })).toThrow('e_nervure must be a positive number expressed in meters.');
+  });
 });

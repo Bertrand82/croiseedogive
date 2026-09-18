@@ -10,16 +10,16 @@ function disposeMaterial(material) {
       return;
     }
 
-    if (value.isTexture && typeof value.dispose === 'function') {
-      value.dispose();
-      return;
-    }
-
     if (visited.has(value)) {
       return;
     }
 
     visited.add(value);
+
+    if (value.isTexture && typeof value.dispose === 'function') {
+      value.dispose();
+      return;
+    }
 
     if (Array.isArray(value)) {
       value.forEach(disposeOwnedTextures);
@@ -29,7 +29,13 @@ function disposeMaterial(material) {
     Object.values(value).forEach(disposeOwnedTextures);
   };
 
-  disposeOwnedTextures(material);
+  Object.keys(material).forEach((key) => {
+    disposeOwnedTextures(material[key]);
+  });
+
+  if (material.userData) {
+    disposeOwnedTextures(material.userData);
+  }
 
   if (typeof material.dispose === 'function') {
     material.dispose();

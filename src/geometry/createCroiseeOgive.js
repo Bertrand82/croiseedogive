@@ -1,5 +1,11 @@
 import * as THREE from 'three';
 
+function validatePositiveDimension(name, value) {
+  if (typeof value !== 'number' || Number.isNaN(value) || value <= 0) {
+    throw new Error(`${name} must be a positive number expressed in meters.`);
+  }
+}
+
 /**
  * Build the croisée d'ogive geometry.
  *
@@ -9,6 +15,10 @@ import * as THREE from 'three';
  * - e_nervure: rib thickness in meters
  */
 export function createSimpleCroiseeOgive({ cote_a, cote_b, e_nervure }) {
+  validatePositiveDimension('cote_a', cote_a);
+  validatePositiveDimension('cote_b', cote_b);
+  validatePositiveDimension('e_nervure', e_nervure);
+
   const phi = Math.atan(cote_b / cote_a);
   const diagonale = Math.sqrt(cote_a * cote_a + cote_b * cote_b);
   const hauteur = diagonale / 2;
