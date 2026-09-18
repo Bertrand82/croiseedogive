@@ -36,12 +36,14 @@ class BgComponent extends Component {
 
   // Update current state with changes from controls
   handleUpdate = newData => {
-    const updatedData = { ...this.state.data, ...newData };
-    this.setState({
-      data: updatedData
+    this.setState(prevState => {
+      const updatedData = { ...prevState.data, ...newData };
+      // Update parent
+      this.props.updateParam(updatedData);
+      return {
+        data: updatedData
+      };
     });
-    // Update parent
-    this.props.updateParam(updatedData);
   }
 
   render() {

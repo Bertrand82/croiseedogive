@@ -210,13 +210,15 @@ class BgThreeScene extends Component {
         this.renderer.render(this.scene, this.camera)
     }
     updateParam = (newData) => {
-        const updatedData = { ...this.state.data, ...newData };
-        console.log("updateParam ----- a: " + updatedData.cote_a + "  b: " + updatedData.cote_b + "  e: " + updatedData.e_nervure);
-        this.setState({ data: updatedData });
-        this.scene.remove(this.croiseeOgive);
+        this.setState(prevState => {
+            const updatedData = { ...prevState.data, ...newData };
+            console.log("updateParam ----- a: " + updatedData.cote_a + "  b: " + updatedData.cote_b + "  e: " + updatedData.e_nervure);
+            this.scene.remove(this.croiseeOgive);
 
-        this.croiseeOgive = this.createSimpleCroiseeOgive(updatedData.cote_a / 100, updatedData.cote_b / 100, updatedData.e_nervure / 100);
-        this.scene.add(this.croiseeOgive);
+            this.croiseeOgive = this.createSimpleCroiseeOgive(updatedData.cote_a / 100, updatedData.cote_b / 100, updatedData.e_nervure / 100);
+            this.scene.add(this.croiseeOgive);
+            return { data: updatedData };
+        });
     }
     render() {
         return (

@@ -121,11 +121,12 @@ class BgCalculVoute extends Component {
     }
 
     updateParam = (d) => {
-        const newData = { ...this.state.data, ...d };
-        console.log("updateParam2 ----- a: " + newData.cote_a + "  b: " + newData.cote_b + "  e: " + newData.e_nervure);
-        this.setState({ data: newData });
-        this.props.updateParam(newData);
-        ;
+        this.setState(prevState => {
+            const newData = { ...prevState.data, ...d };
+            console.log("updateParam2 ----- a: " + newData.cote_a + "  b: " + newData.cote_b + "  e: " + newData.e_nervure);
+            this.props.updateParam(newData);
+            return { data: newData };
+        });
     }
 
 
