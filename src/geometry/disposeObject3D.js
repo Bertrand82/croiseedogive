@@ -3,11 +3,33 @@ function disposeMaterial(material) {
     return;
   }
 
-  Object.values(material).forEach((value) => {
-    if (value && value.isTexture && typeof value.dispose === 'function') {
-      value.dispose();
+  const visited = new WeakSet();
+
+  const disposeOwnedTextures = (value) => {
+    if (!value || typeof value !== 'object') {
+      return;
     }
-  });
+
+    if (value.isTexture && typeof value.dispose === 'function') {
+      value.dispose();
+      return;
+    }
+
+    if (visited.has(value)) {
+      return;
+    }
+
+    visited.add(value);
+
+    if (Array.isArray(value)) {
+      value.forEach(disposeOwnedTextures);
+      return;
+    }
+
+    Object.values(value).forEach(disposeOwnedTextures);
+  };
+
+  disposeOwnedTextures(material);
 
   if (typeof material.dispose === 'function') {
     material.dispose();
