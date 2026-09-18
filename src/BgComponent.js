@@ -29,7 +29,7 @@ class BgComponent extends Component {
 
     this.state = {
       data: initialState,
-      defaultData: initialState
+      defaultData
     };
     this.pendingData = initialState;
   }

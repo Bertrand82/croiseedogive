@@ -23,12 +23,13 @@ class BgThreeScene extends Component {
             nbBriqueVoutinParMetre2:6.5,
             prixUnitaireBriqueVoutin:5.45
         };
+        const mergedInitialState = props.data ? { ...initialState, ...props.data } : initialState;
 
         this.state = {
-            data: initialState,
+            data: mergedInitialState,
             defaultData: initialState
         };
-        this.pendingData = initialState;
+        this.pendingData = mergedInitialState;
     }
 
 
