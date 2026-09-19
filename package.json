@@ -2,6 +2,7 @@
   "name": "bg_three_2",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://bertrand82.github.io/croiseedogive",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
