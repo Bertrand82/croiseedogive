@@ -2,8 +2,6 @@ import 'react-dat-gui/dist/index.css';
 
 import DatGui, {
   DatNumber,
-  DatString,
-  DatButton,
   DatFolder
 } from 'react-dat-gui';
 import React, { Component } from 'react';
@@ -44,7 +42,7 @@ class BgComponent extends Component {
   }
 
   render() {
-    const { data, defaultData } = this.state;
+    const { data } = this.state;
 
     return (
       <main style={{ marginRight: '350px' }}>

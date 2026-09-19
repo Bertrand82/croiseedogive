@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TrackballControls from './TrackballControls';
-import BgComponent from './BgComponent';
 import BgCalculVoute from './BgCalculVoute';
 import * as THREE from 'three';
 
@@ -156,7 +155,6 @@ class BgThreeScene extends Component {
         torusCroisee2.rotation.y += -phi;
         var cleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.01);
         cleGeometry.translate(0, hauteur, 0);
-        var cleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
         var cle = new THREE.Mesh(cleGeometry, torusMmaterial);
 
 
