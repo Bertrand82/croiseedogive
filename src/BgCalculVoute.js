@@ -1,141 +1,37 @@
 import React, { Component } from 'react';
 import BgComponent from './BgComponent';
+import calculateVoute from './domain/calculateVoute';
+
+const initialData = {
+    cote_a: 200,
+    cote_b: 200,
+    e_nervure: 10,
+    titre: ' Croisée d\'ogive ',
+    nbBriqueNervureParMetre: 5,
+    prixUnitaireBriqueNervure: 2.7,
+    nbBriqueVoutinParMetre2: 6.5,
+    prixUnitaireBriqueVoutin: 5.45
+};
+
 class BgCalculVoute extends Component {
     constructor(props) {
         super(props);
 
-        const initialState = {
-            cote_a: 200,
-            cote_b: 200,
-            e_nervure: 10,
-            titre: ' Croisée d\'ogive ',
-            nbBriqueNervureParMetre: 5,
-            prixUnitaireBriqueNervure: 2.7,
-            nbBriqueVoutinParMetre2: 6.5,
-            prixUnitaireBriqueVoutin: 5.45
-        };
-
         this.state = {
-            data: initialState,
+            data: initialData,
         };
     }
 
-    calculDiagonale(data) {
-        var dia2 = data.cote_a * data.cote_a + data.cote_b * data.cote_b;
-        var dia = Math.sqrt(dia2);
-        return Number.parseFloat(dia).toFixed(0);
-    }
-    calculHauteurExtrados(data) {
-        var h = data.diagonale / 2;
-        return h;
-    }
-
-    calculCentre(cote, hauteur) {
-        var a = cote / 2;
-        var rTierPoint = (a * a + hauteur * hauteur) / (2 * a);
-        return Number.parseFloat(rTierPoint).toFixed(0);
-    }
-    calculRayon(centre, e) {
-        var r = centre - e;
-        return r;
-    }
-
-    calculRayonDiagonale(data) {
-        return data.diagonale / 2 - data.e_nervure;
-    }
-
-    calculLongueurTotaleNervureArreteCote(hauteur, centre, rayon) {
-        var alpha = Math.asin(hauteur / centre);
-        var l = 2 * alpha * rayon;
-        console.log(" longueurTotaleNervureArreteCote " + l);
-        return l;
-    }
-
-    calculLongueurTotaleNervureDiagonale(data) {
-        return data.rayonDiagonale * Math.PI;
-    }
-
-    calculLongueurArreteTotal = function (data) {
-        
-        var l = 0;
-        l += 2 * data.longueurTotaleArreteCote_a;
-        l += 2 * data.longueurTotaleArreteCote_b;
-        l += 2 * data.longueurTotaleArreteDiagonale;
-        return Number.parseFloat(l).toFixed(0);;
-    }
-
-    calculSurfaceTotaleVoutins(data) {
-        var l_a = data.longueurTotaleArreteCote_a;
-        var l_b = data.longueurTotaleArreteCote_b;
-        var s = 0;
-        s += l_a * data.cote_b / 2;
-        s += l_b * data.cote_a / 2;
-        return Number.parseFloat(s).toFixed(0);
-    }
-
-    calculNbTotalBriquesNervures(data) {
-        var n = data.longueurTotaleArrete * data.nbBriqueNervureParMetre / 100;
-        return Number.parseFloat(n).toFixed(0);
-    }
-
-    calculNbTotalBriquesVoutins(data) {
-        var n = data.surfaceTotaleVoutins * data.nbBriqueVoutinParMetre2 / 100 / 100;
-        return Number.parseFloat(n).toFixed(0);
-    }
-    calculPrixTotalBriquesNervures(data) {
-        var total = data.nbTotalBriquesNervures * data.prixUnitaireBriqueNervure;
-        return Number.parseFloat(total).toFixed(0);
-    }
-    calculPrixTotalBriquesVoutins(data) {
-        var total = data.nbTotalBriquesVoutins * data.prixUnitaireBriqueVoutin;
-        return Number.parseFloat(total).toFixed(0);
-    }
-    calculPrixTotal(data) {
-        var total = 0;
-
-        total += data.nbTotalBriquesNervures * data.prixUnitaireBriqueNervure;
-        total += data.nbTotalBriquesVoutins * data.prixUnitaireBriqueVoutin;
-        return Number.parseFloat(total).toFixed(2);
-    }
-    calculVoute(data) {
-        data.diagonale = this.calculDiagonale(data);
-        data.hauteurExtrados = this.calculHauteurExtrados(data);
-        data.centre_a = this.calculCentre(data.cote_a, data.hauteurExtrados);
-        data.centre_b = this.calculCentre(data.cote_b, data.hauteurExtrados);
-        data.rayon_a = this.calculRayon(data.centre_a, data.e_nervure);
-        data.rayon_b = this.calculRayon(data.centre_b, data.e_nervure);
-        data.rayonDiagonale = this.calculRayonDiagonale(data);
-        data.longueurTotaleArreteCote_a = this.calculLongueurTotaleNervureArreteCote(data.hauteurExtrados, data.centre_a, data.rayon_a)
-        data.longueurTotaleArreteCote_b = this.calculLongueurTotaleNervureArreteCote(data.hauteurExtrados, data.centre_b, data.rayon_b)
-        data.longueurTotaleArreteDiagonale = this.calculLongueurTotaleNervureDiagonale(data);
-        data.longueurTotaleArrete = this.calculLongueurArreteTotal(data);
-        data.surfaceTotaleVoutins = this.calculSurfaceTotaleVoutins(data);
-        data.nbTotalBriquesNervures = this.calculNbTotalBriquesNervures(data);
-        data.prixTotalBriquesNervures = this.calculPrixTotalBriquesNervures(data);
-        data.nbTotalBriquesVoutins = this.calculNbTotalBriquesVoutins(data);
-        data.prixTotalBriquesVoutins = this.calculPrixTotalBriquesVoutins(data);
-        data.prixTotalBriques = this.calculPrixTotal(data);
-        return data;
-    }
-
-    updateParam = (d) => {
-        console.log("updateParam2 ----- a: " + d.cote_a + "  b: " + d.cote_b + "  e: " + d.e_nervure);
-        var newData = this.state.data;
-        newData.cote_a = d.cote_a;
-        newData.cote_b = d.cote_b;
-        newData.e_nervure = d.e_nervure;
-        newData.nbBriqueNervureParMetre = d.nbBriqueNervureParMetre;
-        newData.prixUnitaireBriqueNervure = d.prixUnitaireBriqueNervure;
-        newData.nbBriqueVoutinParMetre2 = d.nbBriqueVoutinParMetre2;
-        newData.prixUnitaireBriqueVoutin = d.prixUnitaireBriqueVoutin;
-        this.setState({ data: newData });
-        this.props.updateParam(this.state.data.cote_a, this.state.data.cote_b, this.state.data.e_nervure);
-        ;
+    updateParam = (newParams) => {
+        const mergedData = { ...this.state.data, ...newParams };
+        this.setState({ data: mergedData });
+        // Transmit the freshly merged data, not the stale pre-setState state
+        this.props.updateParam(mergedData);
     }
 
 
     render() {
-        var data = this.calculVoute(this.state.data);
+        var data = calculateVoute(this.state.data);
 
         return (
 
@@ -252,7 +148,7 @@ class BgCalculVoute extends Component {
 
 
                 </table>
-                <BgComponent updateParam={this.updateParam} data="{data}" cote_a="{data.cote_a}" />
+                <BgComponent updateParam={this.updateParam} />
 
             </section>
         );
